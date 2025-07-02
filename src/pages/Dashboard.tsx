@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React from 'react';
-=======
 import React, { useEffect, useState } from 'react';
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -17,77 +13,6 @@ import {
   Search
 } from 'lucide-react';
 
-<<<<<<< HEAD
-const Dashboard = () => {
-  const stats = [
-    {
-      title: 'Total de Leads',
-      value: '2,847',
-      change: '+12%',
-      icon: Users,
-      color: 'text-primary'
-    },
-    {
-      title: 'Mensagens Enviadas',
-      value: '1,234',
-      change: '+8%',
-      icon: MessageSquare,
-      color: 'text-accent'
-    },
-    {
-      title: 'Taxa de Resposta',
-      value: '23.5%',
-      change: '+5%',
-      icon: Check,
-      color: 'text-success'
-    },
-    {
-      title: 'Leads Quentes',
-      value: '156',
-      change: '+15%',
-      icon: TrendingUp,
-      color: 'text-warning'
-    }
-  ];
-
-  const recentCampaigns = [
-    {
-      name: 'Restaurantes São Paulo',
-      status: 'Ativa',
-      leads: 245,
-      sent: 189,
-      responses: 45,
-      progress: 77
-    },
-    {
-      name: 'Academias Rio de Janeiro',
-      status: 'Pausada',
-      leads: 180,
-      sent: 120,
-      responses: 28,
-      progress: 67
-    },
-    {
-      name: 'Salões de Beleza BH',
-      status: 'Ativa',
-      leads: 320,
-      sent: 298,
-      responses: 72,
-      progress: 93
-    }
-  ];
-
-  const recentActivity = [
-    { time: '10:30', action: 'Nova resposta de "Restaurante do João"', type: 'response' },
-    { time: '09:15', action: 'Campanha "Academias RJ" pausada', type: 'pause' },
-    { time: '08:45', action: '15 novos leads coletados', type: 'leads' },
-    { time: '07:30', action: 'Mensagem enviada para 45 leads', type: 'message' }
-  ];
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-=======
 const API_DASHBOARD = 'http://localhost:4000/api/dashboard';
 
 const Dashboard = () => {
@@ -107,7 +32,6 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
@@ -124,31 +48,6 @@ const Dashboard = () => {
           </Button>
         </div>
       </div>
-<<<<<<< HEAD
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <Card key={index} className="hover:shadow-medium transition-all">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className={`w-4 h-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-              <Badge variant="secondary" className="text-xs mt-1">
-                {stat.change} vs mês anterior
-              </Badge>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Campaigns */}
-=======
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card className="hover:shadow-medium transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -192,42 +91,12 @@ const Dashboard = () => {
           </Card>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
               Campanhas Recentes
             </CardTitle>
-<<<<<<< HEAD
-            <CardDescription>
-              Acompanhe o progresso das suas campanhas ativas
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {recentCampaigns.map((campaign, index) => (
-              <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-foreground">{campaign.name}</p>
-                    <Badge 
-                      variant={campaign.status === 'Ativa' ? 'default' : 'secondary'}
-                      className="text-xs"
-                    >
-                      {campaign.status}
-                    </Badge>
-                  </div>
-                  <div className="flex gap-4 text-sm text-muted-foreground">
-                    <span>{campaign.leads} leads</span>
-                    <span>{campaign.sent} enviadas</span>
-                    <span>{campaign.responses} respostas</span>
-                  </div>
-                  <Progress value={campaign.progress} className="w-40 h-2" />
-                </div>
-                <Button variant="ghost" size="sm">
-                  Ver detalhes
-                </Button>
-=======
             <CardDescription>Acompanhe o progresso das suas campanhas ativas</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -243,36 +112,16 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <Button variant="ghost" size="sm">Ver detalhes</Button>
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
               </div>
             ))}
           </CardContent>
         </Card>
-<<<<<<< HEAD
-
-        {/* Recent Activity */}
-=======
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="w-5 h-5" />
               Atividade Recente
             </CardTitle>
-<<<<<<< HEAD
-            <CardDescription>
-              Últimas ações no sistema
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-primary"></div>
-                  <div className="flex-1">
-                    <p className="text-sm text-foreground">{activity.action}</p>
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
-=======
             <CardDescription>Últimas ações no sistema</CardDescription>
           </CardHeader>
           <CardContent>
@@ -283,7 +132,6 @@ const Dashboard = () => {
                   <div className="flex-1">
                     <p className="text-sm text-foreground">Mensagem para <b>{a.Lead?.nome || 'Lead'}</b> na campanha <b>{a.Campaign?.nome || 'Campanha'}</b></p>
                     <p className="text-xs text-muted-foreground">{new Date(a.createdAt).toLocaleString('pt-BR')}</p>
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
                   </div>
                 </div>
               ))}
@@ -291,21 +139,10 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-<<<<<<< HEAD
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ações Rápidas</CardTitle>
-          <CardDescription>
-            Acesse rapidamente as funcionalidades principais
-          </CardDescription>
-=======
       <Card>
         <CardHeader>
           <CardTitle>Ações Rápidas</CardTitle>
           <CardDescription>Acesse rapidamente as funcionalidades principais</CardDescription>
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

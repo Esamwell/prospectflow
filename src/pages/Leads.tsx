@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 import React, { useEffect, useState } from 'react';
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,81 +28,6 @@ import {
   Clock,
   Phone
 } from 'lucide-react';
-<<<<<<< HEAD
-
-const Leads = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('todos');
-
-  const mockLeads = [
-    {
-      id: 1,
-      name: 'Restaurante do João',
-      phone: '+5511999887766',
-      city: 'São Paulo',
-      category: 'Restaurante',
-      status: 'quente',
-      lastContact: '2024-01-15',
-      responses: 3,
-      whatsapp: true
-    },
-    {
-      id: 2,
-      name: 'Academia Fitness Pro',
-      phone: '+5511888776655',
-      city: 'Rio de Janeiro',
-      category: 'Academia',
-      status: 'respondido',
-      lastContact: '2024-01-14',
-      responses: 1,
-      whatsapp: true
-    },
-    {
-      id: 3,
-      name: 'Salão Beleza Total',
-      phone: '+5511777665544',
-      city: 'Belo Horizonte',
-      category: 'Salão de Beleza',
-      status: 'enviado',
-      lastContact: '2024-01-13',
-      responses: 0,
-      whatsapp: true
-    },
-    {
-      id: 4,
-      name: 'Farmácia Central',
-      phone: '+5511666554433',
-      city: 'São Paulo',
-      category: 'Farmácia',
-      status: 'ignorado',
-      lastContact: '2024-01-12',
-      responses: 0,
-      whatsapp: false
-    },
-    {
-      id: 5,
-      name: 'Pet Shop Amigo Fiel',
-      phone: '+5511555443322',
-      city: 'Curitiba',
-      category: 'Pet Shop',
-      status: 'pendente',
-      lastContact: null,
-      responses: 0,
-      whatsapp: true
-    }
-  ];
-
-  const getStatusBadge = (status: string) => {
-    const configs = {
-      'quente': { variant: 'default' as const, color: 'bg-red-500', label: 'Quente' },
-      'respondido': { variant: 'default' as const, color: 'bg-green-500', label: 'Respondeu' },
-      'enviado': { variant: 'secondary' as const, color: 'bg-blue-500', label: 'Enviado' },
-      'ignorado': { variant: 'secondary' as const, color: 'bg-gray-500', label: 'Ignorado' },
-      'pendente': { variant: 'outline' as const, color: 'bg-yellow-500', label: 'Pendente' }
-    };
-    
-    const config = configs[status as keyof typeof configs];
-=======
 import { useNavigate } from 'react-router-dom';
 
 const API_URL = 'http://localhost:4000/api/leads';
@@ -219,7 +140,6 @@ const Leads = () => {
       'pendente': { variant: 'outline', color: 'bg-yellow-500', label: 'Pendente' }
     };
     const config = configs[status] || { variant: 'outline', color: '', label: status };
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
     return (
       <Badge variant={config.variant} className="gap-1">
         <div className={`w-2 h-2 rounded-full ${config.color}`}></div>
@@ -228,24 +148,6 @@ const Leads = () => {
     );
   };
 
-<<<<<<< HEAD
-  const filteredLeads = mockLeads.filter(lead => {
-    const matchesSearch = lead.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lead.phone.includes(searchTerm) ||
-                         lead.city.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'todos' || lead.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  const stats = [
-    { label: 'Total de Leads', value: mockLeads.length, icon: Users },
-    { label: 'Leads Quentes', value: mockLeads.filter(l => l.status === 'quente').length, icon: Users },
-    { label: 'Responderam', value: mockLeads.filter(l => l.status === 'respondido').length, icon: Check },
-    { label: 'Pendentes', value: mockLeads.filter(l => l.status === 'pendente').length, icon: Clock }
-  ];
-
-=======
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -260,8 +162,6 @@ const Leads = () => {
         </Button>
       </div>
 
-<<<<<<< HEAD
-=======
       <form onSubmit={handleCriar} className="flex flex-wrap gap-2 items-end">
         <Input placeholder="Nome" value={nome} onChange={e => setNome(e.target.value)} />
         <Input placeholder="Telefone" value={telefone} onChange={e => setTelefone(e.target.value)} />
@@ -272,7 +172,6 @@ const Leads = () => {
       {erro && <div className="text-destructive text-center">{erro}</div>}
       {sucesso && <div className="text-green-600 text-center">{sucesso}</div>}
 
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
@@ -349,7 +248,9 @@ const Leads = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-<<<<<<< HEAD
+          {loading ? (
+            <div className="text-center text-muted-foreground">Carregando leads...</div>
+          ) : (
           <Table>
             <TableHeader>
               <TableRow>
@@ -368,16 +269,16 @@ const Leads = () => {
                 <TableRow key={lead.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="font-medium">{lead.name}</div>
+                        <div className="font-medium">{lead.nome}</div>
                       {lead.whatsapp && (
                         <Phone className="w-4 h-4 text-green-500" />
                       )}
                     </div>
                   </TableCell>
-                  <TableCell className="font-mono text-sm">{lead.phone}</TableCell>
-                  <TableCell>{lead.city}</TableCell>
+                    <TableCell className="font-mono text-sm">{lead.telefone}</TableCell>
+                    <TableCell>{lead.cidade}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{lead.category}</Badge>
+                      <Badge variant="outline">{lead.categoria}</Badge>
                   </TableCell>
                   <TableCell>
                     {getStatusBadge(lead.status)}
@@ -386,7 +287,7 @@ const Leads = () => {
                     {lead.lastContact ? new Date(lead.lastContact).toLocaleDateString('pt-BR') : '-'}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{lead.responses}</Badge>
+                      <Badge variant="secondary">{lead.responses || 0}</Badge>
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -400,8 +301,8 @@ const Leads = () => {
                         <DropdownMenuItem>Marcar como Quente</DropdownMenuItem>
                         <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive">
-                          Parar Follow-up
+                          <DropdownMenuItem className="text-destructive" onClick={() => handleExcluir(lead.id)}>
+                            Parar Follow-up / Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -410,72 +311,7 @@ const Leads = () => {
               ))}
             </TableBody>
           </Table>
-=======
-          {loading ? (
-            <div className="text-center text-muted-foreground">Carregando leads...</div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Empresa</TableHead>
-                  <TableHead>Telefone</TableHead>
-                  <TableHead>Localização</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Último Contato</TableHead>
-                  <TableHead>Respostas</TableHead>
-                  <TableHead>Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredLeads.map((lead) => (
-                  <TableRow key={lead.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="font-medium">{lead.nome}</div>
-                        {lead.whatsapp && (
-                          <Phone className="w-4 h-4 text-green-500" />
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">{lead.telefone}</TableCell>
-                    <TableCell>{lead.cidade}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{lead.categoria}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(lead.status)}
-                    </TableCell>
-                    <TableCell>
-                      {lead.lastContact ? new Date(lead.lastContact).toLocaleDateString('pt-BR') : '-'}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary">{lead.responses || 0}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            Ações
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-popover">
-                          <DropdownMenuItem>Ver Conversa</DropdownMenuItem>
-                          <DropdownMenuItem>Marcar como Quente</DropdownMenuItem>
-                          <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive" onClick={() => handleExcluir(lead.id)}>
-                            Parar Follow-up / Excluir
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
           )}
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
         </CardContent>
       </Card>
     </div>

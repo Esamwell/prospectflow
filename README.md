@@ -1,66 +1,73 @@
-# ProspectFlow
+# Welcome to your Lovable project
 
-Sistema web de automação de prospecção via WhatsApp, com scraping de leads do Google Meu Negócio, envio de mensagens automáticas, painel de gestão e multiusuário.
+## Project info
 
-## Funcionalidades
+**URL**: https://lovable.dev/projects/6ab2da89-897e-4fd7-8c28-cca6deb7de68
 
-- **Scraping de Leads**: Coleta automática de leads do Google Meu Negócio (Google Maps) usando Puppeteer.
-- **Envio Automático de Mensagens**: Disparo de mensagens em massa e follow-ups automáticos via WhatsApp, com integração Baileys.
-- **Gestão de Leads**: Cadastro, visualização, busca e segmentação de leads.
-- **Gestão de Campanhas**: Criação, edição e acompanhamento de campanhas de prospecção.
-- **Dashboard Gerencial**: Visualização de métricas em tempo real (leads, mensagens, taxa de resposta, leads quentes, campanhas, atividades recentes).
-- **Multiusuário**: Controle de usuários, permissões e autenticação JWT.
-- **Multi-sessão WhatsApp**: Gerenciamento de múltiplas conexões/sessões WhatsApp (criar, listar, conectar via QR Code, remover).
-- **Busca Global**: Pesquisa unificada em leads, campanhas, usuários e mensagens.
-- **Configurações de Usuário**: Edição de perfil, senha e dados pessoais.
+## How can I edit this code?
 
-## Tecnologias Utilizadas
+There are several ways of editing your application.
 
-- **Frontend:** React, TypeScript, Vite, Tailwind CSS, shadcn-ui
-- **Backend:** Node.js, Express, Sequelize, MySQL
-- **Scraping:** Puppeteer
-- **WhatsApp:** @whiskeysockets/baileys
+**Use Lovable**
 
-## Instalação
+Simply visit the [Lovable Project](https://lovable.dev/projects/6ab2da89-897e-4fd7-8c28-cca6deb7de68) and start prompting.
 
-1. Clone o repositório:
-   ```sh
-   git clone https://github.com/Esamwell/wa-lead-magnet-system.git
-   cd wa-lead-magnet-system-main
-   ```
-2. Instale as dependências do backend:
-   ```sh
-   cd backend
-   npm install
-   ```
-3. Instale as dependências do frontend:
-   ```sh
-   cd ../
-   npm install
-   ```
-4. Configure o banco de dados MySQL e o arquivo `.env` no backend.
-5. Inicie o backend:
-   ```sh
-   cd backend
-   npm start
-   ```
-6. Inicie o frontend:
-   ```sh
-   npm run dev
-   ```
+Changes made via Lovable will be committed automatically to this repo.
 
-## Como usar
+**Use your preferred IDE**
 
-- Acesse o sistema via navegador em `http://localhost:5173` (ou porta configurada).
-- Faça login com seu usuário.
-- Utilize o menu lateral para acessar Leads, Campanhas, Mensagens, Dashboard, Scraping, Sessões WhatsApp e Configurações.
-- Para scraping, acesse a página de Scraping, defina os parâmetros e inicie a coleta de leads.
-- Gerencie campanhas, leads e mensagens pelo painel.
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-## Sobre o Projeto
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-O ProspectFlow foi desenvolvido para automatizar a prospecção comercial via WhatsApp, facilitando a geração e o acompanhamento de leads, campanhas e resultados em um único painel intuitivo e moderno.
+Follow these steps:
 
----
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-Desenvolvido por Esamwell
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
+
+# Step 3: Install the necessary dependencies.
+npm i
+
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
+```
+
+**Edit a file directly in GitHub**
+
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
+
+**Use GitHub Codespaces**
+
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
+
+## What technologies are used for this project?
+
+This project is built with:
+
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/6ab2da89-897e-4fd7-8c28-cca6deb7de68) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)

@@ -20,10 +20,7 @@ import {
   SidebarHeader,
   useSidebar
 } from '@/components/ui/sidebar';
-<<<<<<< HEAD
-=======
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 
 const menuItems = [
   {
@@ -37,14 +34,6 @@ const menuItems = [
     icon: Users,
   },
   {
-<<<<<<< HEAD
-    title: 'Campanhas',
-    url: '/campaigns',
-    icon: MessageSquare,
-  },
-  {
-=======
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
     title: 'Busca',
     url: '/search',
     icon: Search,
@@ -54,8 +43,6 @@ const menuItems = [
     url: '/settings',
     icon: Settings,
   },
-<<<<<<< HEAD
-=======
   {
     title: 'Usuários',
     url: '/usuarios',
@@ -71,7 +58,6 @@ const menuItems = [
     url: '/scraping-leads',
     icon: Users,
   },
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 ];
 
 export function AppSidebar() {
@@ -120,8 +106,6 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-<<<<<<< HEAD
-=======
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="campanhas-mensagens">
                   <AccordionTrigger>
@@ -162,7 +146,6 @@ export function AppSidebar() {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
->>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
