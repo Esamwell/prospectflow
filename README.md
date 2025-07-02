@@ -1,73 +1,66 @@
-# Welcome to your Lovable project
+# ProspectFlow 🚀
 
-## Project info
+Automação de Prospecção via WhatsApp para Negócios
 
-**URL**: https://lovable.dev/projects/6ab2da89-897e-4fd7-8c28-cca6deb7de68
+---
 
-## How can I edit this code?
+## Sobre o Projeto
 
-There are several ways of editing your application.
+O **ProspectFlow** é um sistema completo para automação de prospecção de clientes via WhatsApp, focado em negócios locais e agências. Com ele, você pode buscar leads no Google Meu Negócio, gerenciar campanhas, enviar mensagens automáticas, acompanhar resultados e muito mais — tudo em um painel moderno, multiusuário e fácil de usar!
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/6ab2da89-897e-4fd7-8c28-cca6deb7de68) and start prompting.
+## Funcionalidades Principais ✨
 
-Changes made via Lovable will be committed automatically to this repo.
+- 🔍 **Scraping de Leads**: Busque leads diretamente do Google Maps/Meu Negócio usando Puppeteer.
+- 📲 **Envio Automático de Mensagens**: Integração com WhatsApp via Baileys para disparo e follow-up automático.
+- 📊 **Dashboard em Tempo Real**: Visualize métricas de leads, campanhas, taxa de resposta, atividades recentes e muito mais.
+- 🗂️ **Gestão de Leads, Campanhas e Mensagens**: CRUD completo, busca global e filtros inteligentes.
+- 👥 **Multiusuário & Permissões**: Controle de acesso, autenticação JWT, painel de usuários e configurações.
+- 🤖 **Follow-up Inteligente**: Sequência automática de mensagens, interrompendo ao receber resposta.
+- 🔐 **Autenticação Segura**: Login, logout, proteção de rotas e tratamento de sessão expirada.
+- 🛠️ **Multi-sessão WhatsApp**: Gerencie várias conexões, QR Code, status em tempo real e reconexão automática.
+- ⚙️ **Configurações do Usuário**: Edite nome, e-mail e senha facilmente.
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Tecnologias Utilizadas 🛠️
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn-ui
+- **Backend:** Node.js, Express, Sequelize, MySQL, Baileys, Puppeteer
 
-Follow these steps:
+---
+
+## Como rodar o projeto localmente
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone o repositório
+ git clone https://github.com/Esamwell/prospectflow.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Acesse a pasta do projeto
+ cd prospectflow
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Instale as dependências do backend e frontend
+ cd backend && npm install
+ cd ../ && npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Inicie o backend
+ cd backend && npm run dev
+
+# Em outro terminal, inicie o frontend
+ npm run dev
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Contribua com o ProspectFlow! 🤝
 
-**Use GitHub Codespaces**
+Este projeto é open source e está em constante evolução. Sinta-se à vontade para abrir issues, enviar pull requests ou sugerir melhorias. Sua colaboração é muito bem-vinda!
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+**Vamos juntos transformar a prospecção digital!**
 
-## What technologies are used for this project?
+---
 
-This project is built with:
+Feito com 💙 por [esamwel | Agência SA2 Marketing](https://github.com/Esamwell)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/6ab2da89-897e-4fd7-8c28-cca6deb7de68) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+> Venha colaborar, sugerir ideias e construir o futuro do ProspectFlow com a gente!
