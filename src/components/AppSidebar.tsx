@@ -20,6 +20,10 @@ import {
   SidebarHeader,
   useSidebar
 } from '@/components/ui/sidebar';
+<<<<<<< HEAD
+=======
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+>>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 
 const menuItems = [
   {
@@ -33,11 +37,14 @@ const menuItems = [
     icon: Users,
   },
   {
+<<<<<<< HEAD
     title: 'Campanhas',
     url: '/campaigns',
     icon: MessageSquare,
   },
   {
+=======
+>>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
     title: 'Busca',
     url: '/search',
     icon: Search,
@@ -47,6 +54,24 @@ const menuItems = [
     url: '/settings',
     icon: Settings,
   },
+<<<<<<< HEAD
+=======
+  {
+    title: 'Usuários',
+    url: '/usuarios',
+    icon: Users,
+  },
+  {
+    title: 'Leads por Campanha',
+    url: '/leads-campanha',
+    icon: Users,
+  },
+  {
+    title: 'Scraping de Leads',
+    url: '/scraping-leads',
+    icon: Users,
+  },
+>>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 ];
 
 export function AppSidebar() {
@@ -95,6 +120,49 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
+<<<<<<< HEAD
+=======
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="campanhas-mensagens">
+                  <AccordionTrigger>
+                    <span className="flex items-center gap-3">
+                      <MessageSquare className="w-4 h-4" />
+                      {!isCollapsed && <span>Campanhas e Mensagens</span>}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-col gap-1 pl-6">
+                      <NavLink to="/campaigns" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
+                        Listar Campanhas
+                      </NavLink>
+                      <NavLink to="/mensagens" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
+                        Caixa de Mensagens
+                      </NavLink>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="whatsapp">
+                  <AccordionTrigger>
+                    <span className="flex items-center gap-3">
+                      <MessageSquare className="w-4 h-4" />
+                      {!isCollapsed && <span>WhatsApp</span>}
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="flex flex-col gap-1 pl-6">
+                      <NavLink to="/conexao-whatsapp" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
+                        Conexão WhatsApp
+                      </NavLink>
+                      <NavLink to="/whatsapp-sessoes" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
+                        Sessões WhatsApp
+                      </NavLink>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+>>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

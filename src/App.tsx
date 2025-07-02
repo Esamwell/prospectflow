@@ -7,6 +7,19 @@ import { Layout } from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Leads from "./pages/Leads";
 import NotFound from "./pages/NotFound";
+<<<<<<< HEAD
+=======
+import Campaigns from "./pages/Campaigns";
+import Search from "./pages/Search";
+import Settings from "./pages/Settings";
+import Usuarios from "./pages/Usuarios";
+import Mensagens from "./pages/Mensagens";
+import ConexaoWhatsApp from "./pages/ConexaoWhatsApp";
+import LeadsCampanha from "./pages/LeadsCampanha";
+import ScrapingLeads from "./pages/ScrapingLeads";
+import WhatsAppSessoes from "./pages/WhatsAppSessoes";
+import Login from "./pages/Login";
+>>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
 
 const queryClient = new QueryClient();
 
@@ -17,9 +30,25 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+<<<<<<< HEAD
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="leads" element={<Leads />} />
+=======
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="leads" element={<Leads />} />
+            <Route path="campaigns" element={<Campaigns />} />
+            <Route path="search" element={<Search />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="usuarios" element={<Usuarios />} />
+            <Route path="mensagens" element={<Mensagens />} />
+            <Route path="conexao-whatsapp" element={<ConexaoWhatsApp />} />
+            <Route path="leads-campanha" element={<LeadsCampanha />} />
+            <Route path="scraping-leads" element={<ScrapingLeads />} />
+            <Route path="whatsapp-sessoes" element={<WhatsAppSessoes />} />
+>>>>>>> f582084 (Commit inicial do projeto conectado ao GitHub)
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
