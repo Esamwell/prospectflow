@@ -1,0 +1,8 @@
+2025/07/03-00:57:34.013 4240 Reusing MANIFEST C:\Users\msamu\Downloads\wa-lead-magnet-system-main\backend\.wwebjs_auth\session-Comercial\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/03-00:57:34.014 4240 Recovering log #150
+2025/07/03-00:57:34.048 4240 Reusing old log C:\Users\msamu\Downloads\wa-lead-magnet-system-main\backend\.wwebjs_auth\session-Comercial\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000150.log 
+2025/07/03-00:57:34.048 4240 Delete type=2 #146
+2025/07/03-00:57:34.049 4240 Delete type=2 #147
+2025/07/03-00:57:34.049 4240 Delete type=2 #148
+2025/07/03-00:57:34.049 4240 Delete type=2 #151
+2025/07/03-00:57:36.243 2bc0 Manual compaction at level-0 from '\x00(\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00)\x00\x00\x00' @ 0 : 0; will stop at (end)

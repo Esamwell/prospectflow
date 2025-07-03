@@ -6,6 +6,8 @@ const Campaign = sequelize.define('Campaign', {
   nome: { type: DataTypes.STRING, allowNull: false },
   descricao: { type: DataTypes.STRING },
   status: { type: DataTypes.STRING, defaultValue: 'ativa' },
+  sessionId: { type: DataTypes.STRING },
+  companyId: { type: DataTypes.INTEGER, allowNull: true, references: { model: 'company', key: 'id' } },
 }, {
   tableName: 'campaigns',
   timestamps: true,

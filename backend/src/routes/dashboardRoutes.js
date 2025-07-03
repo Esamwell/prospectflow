@@ -6,11 +6,15 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   // Total de leads
   const totalLeads = await Lead.count();
+  // Soma total de respostas
+  const leadsAll = await Lead.findAll({ attributes: ['respostas'] });
+  const totalRespostas = leadsAll.reduce((acc, l) => acc + (l.respostas || 0), 0);
+  // Taxa de resposta
+  const taxaResposta = totalLeads > 0 ? (totalRespostas / totalLeads) * 100 : 0;
+  // Leads que responderam pelo menos uma vez (respostas > 0)
+  const totalLeadsComResposta = await Lead.count({ where: { respostas: { [Op.gt]: 0 } } });
   // Total de mensagens enviadas
   const totalMensagens = await Message.count();
-  // Taxa de resposta (mensagens com resposta / total de mensagens)
-  const totalRespostas = await Message.count({ where: { resposta: { [Op.ne]: null } } });
-  const taxaResposta = totalMensagens > 0 ? (totalRespostas / totalMensagens) * 100 : 0;
   // Leads quentes (status = 'quente')
   const leadsQuentes = await Lead.count({ where: { status: 'quente' } });
   // Campanhas recentes (últimas 3)
@@ -20,8 +24,10 @@ router.get('/', async (req, res) => {
 
   res.json({
     totalLeads,
-    totalMensagens,
+    totalLeadsComResposta,
+    totalRespostas,
     taxaResposta,
+    totalMensagens,
     leadsQuentes,
     campanhasRecentes,
     atividadesRecentes

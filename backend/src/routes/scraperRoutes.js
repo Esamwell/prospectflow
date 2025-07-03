@@ -20,6 +20,12 @@ router.post('/google-maps', async (req, res) => {
         console.log('Lead ignorado (faltando nome ou telefone):', r);
         continue;
       }
+      // Verificar duplicidade pelo telefone
+      const leadExistente = await Lead.findOne({ where: { telefone: r.telefone } });
+      if (leadExistente) {
+        console.log('Lead duplicado ignorado:', r);
+        continue;
+      }
       try {
         console.log('Salvando lead:', r);
         const lead = await Lead.create({

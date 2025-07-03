@@ -1,155 +1,89 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
+import { Link, useLocation } from 'react-router-dom';
 import { 
-  Calendar,
-  Check,
+  LayoutDashboard,
+  UserPlus,
   Settings,
-  Users,
-  MessageSquare,
-  Search
+  UserCog,
+  Building2,
+  ListChecks,
+  Search as SearchIcon,
+  MessageSquare
 } from 'lucide-react';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarHeader,
-  useSidebar
-} from '@/components/ui/sidebar';
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 
-const menuItems = [
-  {
-    title: 'Dashboard',
-    url: '/',
-    icon: Calendar,
-  },
-  {
-    title: 'Leads',
-    url: '/leads',
-    icon: Users,
-  },
-  {
-    title: 'Busca',
-    url: '/search',
-    icon: Search,
-  },
-  {
-    title: 'Configurações',
-    url: '/settings',
-    icon: Settings,
-  },
-  {
-    title: 'Usuários',
-    url: '/usuarios',
-    icon: Users,
-  },
-  {
-    title: 'Leads por Campanha',
-    url: '/leads-campanha',
-    icon: Users,
-  },
-  {
-    title: 'Scraping de Leads',
-    url: '/scraping-leads',
-    icon: Users,
-  },
-];
-
-export function AppSidebar() {
-  const { state } = useSidebar();
+export function AppSidebar({ collapsed = false }) {
   const location = useLocation();
-  const isCollapsed = state === "collapsed";
-
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="border-b border-sidebar-border">
-        <div className="flex items-center gap-2 px-4 py-4">
-          <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <Check className="w-4 h-4 text-white" />
+    <Sidebar backgroundColor="#181C23" width="300px" rootStyles={{ borderRight: '1px solid #23272f', height: '100vh', position: 'fixed', left: 0, top: 0, overflow: 'hidden' }} collapsed={collapsed}>
+      <div className="flex flex-col items-center justify-center py-6">
+        <img src="/logowhite-prospect.png" alt="Logo ProspectFlow" className="w-20 h-auto mb-2" />
           </div>
-          {!isCollapsed && (
-            <div>
-              <h2 className="font-semibold text-sidebar-foreground">ProspectFlow</h2>
-              <p className="text-xs text-sidebar-foreground/70">Automação IA</p>
-            </div>
-          )}
-        </div>
-      </SidebarHeader>
-
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Menu Principal</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end
-                      className={({ isActive }) => 
-                        `flex items-center gap-3 px-3 py-2 rounded-lg transition-all ${
-                          isActive 
-                            ? 'bg-sidebar-primary text-sidebar-primary-foreground font-medium' 
-                            : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-                        }`
-                      }
-                    >
-                      <item.icon className="w-4 h-4" />
-                      {!isCollapsed && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="campanhas-mensagens">
-                  <AccordionTrigger>
-                    <span className="flex items-center gap-3">
-                      <MessageSquare className="w-4 h-4" />
-                      {!isCollapsed && <span>Campanhas e Mensagens</span>}
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-col gap-1 pl-6">
-                      <NavLink to="/campaigns" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
-                        Listar Campanhas
-                      </NavLink>
-                      <NavLink to="/mensagens" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
-                        Caixa de Mensagens
-                      </NavLink>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="whatsapp">
-                  <AccordionTrigger>
-                    <span className="flex items-center gap-3">
-                      <MessageSquare className="w-4 h-4" />
-                      {!isCollapsed && <span>WhatsApp</span>}
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="flex flex-col gap-1 pl-6">
-                      <NavLink to="/conexao-whatsapp" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
-                        Conexão WhatsApp
-                      </NavLink>
-                      <NavLink to="/whatsapp-sessoes" className={({ isActive }) => isActive ? 'font-semibold text-primary' : ''}>
-                        Sessões WhatsApp
-                      </NavLink>
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+      <div className="border-b border-white/20 w-4/5 mx-auto mb-4" />
+      <Menu
+        menuItemStyles={{
+          button: ({ active, level }) => {
+            if (level === 1) {
+              return {
+                color: active ? '#6366f1' : '#b6c8d9',
+                background: 'transparent',
+                fontSize: 15,
+              };
+            }
+            return {
+              color: active ? '#2563eb' : '#b6c8d9',
+              backgroundColor: active ? '#e0e7ff' : 'transparent',
+              borderRadius: '8px',
+              margin: '8px 12px',
+              padding: '10px 14px',
+              fontWeight: active ? 700 : 500,
+              fontSize: 15,
+              minHeight: 40,
+              maxWidth: 260,
+              width: '98%',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+              whiteSpace: 'normal',
+              overflow: 'visible',
+              textOverflow: 'unset',
+              boxShadow: active ? '0 2px 8px 0 rgba(37,99,235,0.10)' : undefined,
+              transition: 'all 0.2s',
+            };
+          },
+          icon: ({ active, level }) => ({ color: active && level === 0 ? '#2563eb' : '#b6c8d9', fontSize: 20 }),
+          label: { fontSize: 15 },
+        }}
+      >
+        <div className="uppercase text-xs text-white/50 font-bold px-4 pt-2 pb-1 tracking-widest">Menu Principal</div>
+        <MenuItem icon={<LayoutDashboard />} component={<Link to="/" />} active={location.pathname === '/'}>Dashboard</MenuItem>
+        <MenuItem icon={<UserPlus />} component={<Link to="/leads" />} active={location.pathname === '/leads'}>Leads</MenuItem>
+        <MenuItem icon={<Settings />} component={<Link to="/settings" />} active={location.pathname === '/settings'}>Configurações</MenuItem>
+        <MenuItem icon={<UserCog />} component={<Link to="/usuarios" />} active={location.pathname === '/usuarios'}>Usuários</MenuItem>
+        <MenuItem icon={<Building2 />} component={<Link to="/company-profiles" />} active={location.pathname === '/company-profiles'}>Perfis de Empresa</MenuItem>
+        <MenuItem icon={<ListChecks />} component={<Link to="/leads-campanha" />} active={location.pathname === '/leads-campanha'}>Leads por Campanha</MenuItem>
+        <MenuItem icon={<SearchIcon />} component={<Link to="/scraping-leads" />} active={location.pathname === '/scraping-leads'}>Scraping de Leads</MenuItem>
+        <div className="border-b border-white/10 w-4/5 mx-auto my-3" />
+        <div className="uppercase text-xs text-white/50 font-bold px-4 pt-2 pb-1 tracking-widest">Outros</div>
+        <SubMenu icon={<MessageSquare />} label="Campanhas e Mensagens"
+          menuItemStyles={{
+            button: ({ active }) => ({ color: active ? '#6366f1' : '#b6c8d9', background: 'transparent' }),
+            label: { fontSize: 15 },
+          }}
+        >
+          <MenuItem component={<Link to="/campaigns" />}>Listar Campanhas</MenuItem>
+          <MenuItem component={<Link to="/mensagens" />}>Caixa de Mensagens</MenuItem>
+        </SubMenu>
+        <SubMenu icon={<MessageSquare />} label="WhatsApp"
+          menuItemStyles={{
+            button: ({ active }) => ({ color: active ? '#6366f1' : '#b6c8d9', background: 'transparent' }),
+            label: { fontSize: 15 },
+          }}
+        >
+          <MenuItem component={<Link to="/whatsapp-sessoes" />}>Sessões WhatsApp</MenuItem>
+          <MenuItem component={<Link to="/conversas-whatsapp" />}>Conversas WhatsApp</MenuItem>
+        </SubMenu>
+      </Menu>
     </Sidebar>
   );
 }

@@ -1,37 +1,50 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-const API_STATUS = 'http://localhost:4000/api/whatsapp/status';
-const API_QR = 'http://localhost:4000/api/whatsapp/qr';
-
-const ConexaoWhatsApp = () => {
-  const [status, setStatus] = useState('');
-  const [qr, setQr] = useState('');
+const ConexaoWhatsApp: React.FC = () => {
+  const [status, setStatus] = useState('Desconhecido');
+  const [qr, setQr] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [erro, setErro] = useState('');
+  const lastQr = useRef<string | null>(null);
 
-  // Buscar status e QR periodicamente
   useEffect(() => {
-    const fetchStatus = () => {
-      fetch(API_STATUS)
-        .then(res => res.json())
-        .then(data => setStatus(data.status));
-      fetch(API_QR)
-        .then(res => res.json())
-        .then(data => setQr(data.qr))
-        .catch(() => setQr(''));
-      setLoading(false);
-    };
     fetchStatus();
-    const interval = setInterval(fetchStatus, 60000);
+    fetchQr();
+    const interval = setInterval(() => {
+      fetchStatus();
+      fetchQr();
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
+
+  const fetchStatus = async () => {
+    try {
+      const res = await axios.get('/api/whatsapp/status-web');
+      setStatus(res.data.status);
+    } catch {
+      setStatus('Erro ao buscar status');
+    }
+    setLoading(false);
+  };
+
+  const fetchQr = async () => {
+    try {
+      const res = await axios.get('/api/whatsapp/qr-web');
+      if (res.data.qr && res.data.qr !== lastQr.current) {
+        setQr(res.data.qr);
+        lastQr.current = res.data.qr;
+      }
+    } catch {
+      setQr(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground">Conexão WhatsApp</h1>
+        <h1 className="text-3xl font-bold text-foreground">Conexão WhatsApp (whatsapp-web.js)</h1>
         <p className="text-muted-foreground">Conecte o sistema ao WhatsApp escaneando o QR Code abaixo.</p>
       </div>
       <Card>
@@ -57,7 +70,7 @@ const ConexaoWhatsApp = () => {
           </CardHeader>
           <CardContent>
             <div className="flex justify-center">
-              <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=250x250`} alt="QR Code WhatsApp" />
+              <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qr)}&size=200x200`} alt="QR Code WhatsApp" />
             </div>
             <div className="text-center text-muted-foreground mt-2">Abra o WhatsApp no seu celular &gt; Menu &gt; Aparelhos conectados &gt; Conectar novo aparelho</div>
           </CardContent>

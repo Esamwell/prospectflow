@@ -10,14 +10,14 @@ import userRoutes from './routes/userRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import auth from './middleware/auth.js';
 import whatsappRoutes from './routes/whatsappRoutes.js';
-import { startWhatsApp } from './services/whatsappService.js';
 import followupRoutes from './routes/followupRoutes.js';
 import './services/followupScheduler.js';
 import campaignLeadRoutes from './routes/campaignLeadRoutes.js';
 import scraperRoutes from './routes/scraperRoutes.js';
-import whatsappMultiRoutes from './routes/whatsappMultiRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
+import { loadSessions } from './services/whatsappWebService.js';
+import companyRoutes from './routes/companyRoutes.js';
 
 dotenv.config();
 
@@ -41,16 +41,15 @@ app.use('/api/campaigns', auth, campaignRoutes);
 app.use('/api/messages', auth, messageRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/whatsapp', whatsappRoutes);
-app.use('/api/whatsapp-multi', whatsappMultiRoutes);
 app.use('/api/followups', followupRoutes);
 app.use('/api/campaign-leads', campaignLeadRoutes);
 app.use('/api/scraper', scraperRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/company', companyRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-});
-
-startWhatsApp(); 
+  loadSessions();
+}); 

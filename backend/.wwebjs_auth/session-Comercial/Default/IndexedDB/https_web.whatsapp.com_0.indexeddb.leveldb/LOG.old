@@ -1,0 +1,13 @@
+2025/07/03-00:55:25.760 2528 Reusing MANIFEST C:\Users\msamu\Downloads\wa-lead-magnet-system-main\backend\.wwebjs_auth\session-Comercial\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/03-00:55:25.761 2528 Recovering log #144
+2025/07/03-00:55:25.803 2528 Reusing old log C:\Users\msamu\Downloads\wa-lead-magnet-system-main\backend\.wwebjs_auth\session-Comercial\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000144.log 
+2025/07/03-00:55:30.834 3b14 Level-0 table #151: started
+2025/07/03-00:55:30.856 3b14 Level-0 table #151: 276484 bytes OK
+2025/07/03-00:55:30.857 3b14 Delete type=0 #144
+2025/07/03-00:55:30.858 3b14 Manual compaction at level-0 from '\x00'\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00(\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/07/03-00:55:33.481 29dc Compacting 1@1 + 3@2 files
+2025/07/03-00:55:33.694 29dc Generated table #152@1: 49701 keys, 2214190 bytes
+2025/07/03-00:55:33.891 29dc Generated table #153@1: 41276 keys, 2201482 bytes
+2025/07/03-00:55:33.919 29dc Generated table #154@1: 15244 keys, 575104 bytes
+2025/07/03-00:55:33.919 29dc Compacted 1@1 + 3@2 files => 4990776 bytes
+2025/07/03-00:55:33.920 29dc compacted to: files[ 0 0 3 0 0 0 0 ]

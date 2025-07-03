@@ -1,107 +1,138 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import axios from 'axios';
 
-const API_MULTI = 'http://localhost:4000/api/whatsapp-multi';
+interface Sessao {
+  id: string;
+  status: string;
+  qr: string | null;
+}
 
-const WhatsAppSessoes = () => {
-  const [sessoes, setSessoes] = useState([]);
+const WhatsAppSessoes: React.FC = () => {
+  const [sessoes, setSessoes] = useState<Sessao[]>([]);
   const [novaSessao, setNovaSessao] = useState('');
-  const [qrCodes, setQrCodes] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState('');
-
-  const carregarSessoes = () => {
-    fetch(`${API_MULTI}/list`)
-      .then(res => res.json())
-      .then(data => setSessoes(data));
-  };
+  const [jid, setJid] = useState('');
+  const [mensagem, setMensagem] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [qrAtual, setQrAtual] = useState<string | null>(null);
+  const [sessaoSelecionada, setSessaoSelecionada] = useState<string | null>(null);
 
   useEffect(() => {
-    carregarSessoes();
-    const interval = setInterval(carregarSessoes, 5000);
+    fetchSessoes();
+    const interval = setInterval(fetchSessoes, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  const handleCriar = async (e) => {
-    e.preventDefault();
-    setErro('');
-    if (!novaSessao) return setErro('Informe um nome para a sessão');
-    setLoading(true);
-    await fetch(`${API_MULTI}/create`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ sessionId: novaSessao })
-    });
+  const fetchSessoes = async () => {
+    const res = await axios.get('/api/whatsapp/sessions');
+    setSessoes(res.data);
+  };
+
+  const criarSessao = async () => {
+    if (!novaSessao.trim()) return;
+    await axios.post('/api/whatsapp/session', { id: novaSessao.trim() });
     setNovaSessao('');
-    setLoading(false);
-    carregarSessoes();
+    fetchSessoes();
   };
 
-  const handleRemover = async (id) => {
-    await fetch(`${API_MULTI}/${id}`, { method: 'DELETE' });
-    carregarSessoes();
+  const mostrarQr = async (id: string) => {
+    setSessaoSelecionada(id);
+    const res = await axios.get(`/api/whatsapp/session/${id}`);
+    setQrAtual(res.data.qr || null);
   };
 
-  const fetchQr = async (id) => {
-    const res = await fetch(`${API_MULTI}/${id}/qr`);
-    if (res.ok) {
-      const data = await res.json();
-      setQrCodes(qr => ({ ...qr, [id]: data.qr }));
+  const enviarMensagem = async () => {
+    if (!sessaoSelecionada || !jid.trim() || !mensagem.trim()) return;
+    setEnviando(true);
+    try {
+      await axios.post(`/api/whatsapp/session/${sessaoSelecionada}/send`, { jid, message: mensagem });
+      setMensagem('');
+    } catch (err) {
+      alert('Erro ao enviar mensagem');
     }
+    setEnviando(false);
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Sessões WhatsApp</h1>
-        <p className="text-muted-foreground">Gerencie múltiplos números de WhatsApp conectados ao sistema.</p>
+    <div style={{ maxWidth: 800, margin: '0 auto', padding: 24 }}>
+      <h2>Sessões WhatsApp</h2>
+      <div style={{ margin: '16px 0', display: 'flex', gap: 8 }}>
+        <input
+          type="text"
+          placeholder="Nome da sessão (ex: comercial01)"
+          value={novaSessao}
+          onChange={e => setNovaSessao(e.target.value)}
+          style={{ padding: 8, borderRadius: 8, border: '1px solid #ccc', flex: 1 }}
+        />
+        <button onClick={criarSessao} style={{ padding: '8px 16px', borderRadius: 8, background: '#1976d2', color: 'white', border: 'none' }}>
+          Criar Nova Sessão
+        </button>
       </div>
-      <form onSubmit={handleCriar} className="flex flex-wrap gap-2 items-end">
-        <Input placeholder="Nome da sessão (ex: comercial01)" value={novaSessao} onChange={e => setNovaSessao(e.target.value)} />
-        <Button type="submit" disabled={loading}>Criar Nova Sessão</Button>
-      </form>
-      {erro && <div className="text-destructive text-center">{erro}</div>}
-      <Card>
-        <CardHeader>
-          <CardTitle>Sessões Ativas ({sessoes.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <table className="min-w-full border text-left">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border-b">ID</th>
-                <th className="px-4 py-2 border-b">Status</th>
-                <th className="px-4 py-2 border-b">QR Code</th>
-                <th className="px-4 py-2 border-b">Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sessoes.map((s) => (
-                <tr key={s.id}>
-                  <td className="px-4 py-2 border-b">{s.id}</td>
-                  <td className="px-4 py-2 border-b">
-                    {s.connected ? <span className="text-green-600">Conectado</span> : <span className="text-yellow-600">Aguardando conexão</span>}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    {!s.connected && (
-                      qrCodes[s.id] ? (
-                        <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCodes[s.id])}&size=120x120`} alt="QR Code" />
-                      ) : (
-                        <Button size="sm" onClick={() => fetchQr(s.id)}>Exibir QR</Button>
-                      )
-                    )}
-                  </td>
-                  <td className="px-4 py-2 border-b">
-                    <Button variant="destructive" size="sm" onClick={() => handleRemover(s.id)}>Remover</Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </CardContent>
-      </Card>
+      <h3>Sessões Ativas ({sessoes.length})</h3>
+      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 16 }}>
+        <thead>
+          <tr style={{ background: '#f5f5f5' }}>
+            <th style={{ padding: 8, border: '1px solid #eee' }}>ID</th>
+            <th style={{ padding: 8, border: '1px solid #eee' }}>Status</th>
+            <th style={{ padding: 8, border: '1px solid #eee' }}>QR Code</th>
+            <th style={{ padding: 8, border: '1px solid #eee' }}>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sessoes.map(sessao => (
+            <tr key={sessao.id}>
+              <td style={{ padding: 8, border: '1px solid #eee' }}>{sessao.id}</td>
+              <td style={{ padding: 8, border: '1px solid #eee' }}>{sessao.status}</td>
+              <td style={{ padding: 8, border: '1px solid #eee' }}>
+                {sessao.qr ? (
+                  <button onClick={() => mostrarQr(sessao.id)} style={{ padding: '4px 12px', borderRadius: 8, background: '#ffb300', color: '#222', border: 'none' }}>
+                    Ver QR
+                  </button>
+                ) : '—'}
+              </td>
+              <td style={{ padding: 8, border: '1px solid #eee' }}>
+                <button onClick={() => setSessaoSelecionada(sessao.id)} style={{ padding: '4px 12px', borderRadius: 8, background: '#4caf50', color: 'white', border: 'none' }}>
+                  Selecionar
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {/* Modal QR Code */}
+      {qrAtual && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setQrAtual(null)}>
+          <div style={{ background: '#fff', padding: 32, borderRadius: 16 }} onClick={e => e.stopPropagation()}>
+            <h4>Escaneie o QR Code</h4>
+            <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrAtual)}&size=200x200`} alt="QR Code" />
+            <div style={{ marginTop: 16, color: '#888' }}>Clique fora para fechar</div>
+          </div>
+        </div>
+      )}
+      {/* Envio de mensagem por sessão */}
+      {sessaoSelecionada && (
+        <div style={{ marginTop: 32, padding: 16, border: '1px solid #eee', borderRadius: 8 }}>
+          <h4>Enviar mensagem pela sessão <b>{sessaoSelecionada}</b></h4>
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <input
+              type="text"
+              placeholder="jid (ex: 5511999999999@c.us)"
+              value={jid}
+              onChange={e => setJid(e.target.value)}
+              style={{ flex: 2, padding: 8, borderRadius: 8, border: '1px solid #ccc' }}
+            />
+            <input
+              type="text"
+              placeholder="Mensagem"
+              value={mensagem}
+              onChange={e => setMensagem(e.target.value)}
+              style={{ flex: 3, padding: 8, borderRadius: 8, border: '1px solid #ccc' }}
+            />
+            <button onClick={enviarMensagem} disabled={enviando} style={{ padding: '8px 16px', borderRadius: 8, background: '#1976d2', color: 'white', border: 'none' }}>
+              Enviar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +29,8 @@ import {
   Phone
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { saveAs } from 'file-saver';
 
 const API_URL = 'http://localhost:4000/api/leads';
 
@@ -43,6 +45,16 @@ const Leads = () => {
   const [cidade, setCidade] = useState('');
   const [categoria, setCategoria] = useState('');
   const [sucesso, setSucesso] = useState('');
+  const [editLead, setEditLead] = useState(null);
+  const [editNome, setEditNome] = useState('');
+  const [editTelefone, setEditTelefone] = useState('');
+  const [editCidade, setEditCidade] = useState('');
+  const [editCategoria, setEditCategoria] = useState('');
+  const [sendLead, setSendLead] = useState(null);
+  const [sendMessage, setSendMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [sessoes, setSessoes] = useState([]);
+  const [sessaoSelecionada, setSessaoSelecionada] = useState('');
   const navigate = useNavigate();
 
   const carregarLeads = () => {
@@ -106,12 +118,95 @@ const Leads = () => {
   const handleExcluir = async (id) => {
     if (!window.confirm('Tem certeza que deseja excluir este lead?')) return;
     setErro(''); setSucesso('');
-    const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': 'Bearer ' + localStorage.getItem('token')
+      }
+    });
     if (res.ok) {
       setSucesso('Lead removido!');
       carregarLeads();
     } else {
       setErro('Erro ao remover lead');
+    }
+  };
+
+  const openEditModal = (lead) => {
+    setEditLead(lead);
+    setEditNome(lead.nome);
+    setEditTelefone(lead.telefone);
+    setEditCidade(lead.cidade || '');
+    setEditCategoria(lead.categoria || '');
+  };
+
+  const closeEditModal = () => {
+    setEditLead(null);
+    setEditNome('');
+    setEditTelefone('');
+    setEditCidade('');
+    setEditCategoria('');
+  };
+
+  const handleEditSave = async () => {
+    if (!editLead) return;
+    setErro(''); setSucesso('');
+    try {
+      const res = await fetch(`${API_URL}/${editLead.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify({ nome: editNome, telefone: editTelefone, cidade: editCidade, categoria: editCategoria })
+      });
+      if (res.ok) {
+        setSucesso('Lead atualizado com sucesso!');
+        closeEditModal();
+        carregarLeads();
+      } else {
+        const data = await res.json();
+        setErro(data.error || 'Erro ao atualizar lead');
+      }
+    } catch (err) {
+      setErro('Erro ao atualizar lead');
+    }
+  };
+
+  const openSendModal = async (lead) => {
+    setSendLead(lead);
+    setSendMessage('');
+    setSessaoSelecionada('');
+    // Buscar sessões ativas
+    try {
+      const res = await fetch('/api/whatsapp/sessions');
+      const data = await res.json();
+      setSessoes(data.filter(s => s.status === 'conectado'));
+    } catch {
+      setSessoes([]);
+    }
+  };
+
+  const closeSendModal = () => {
+    setSendLead(null);
+    setSendMessage('');
+    setSending(false);
+  };
+
+  const handleSendMessage = async () => {
+    if (!sendLead || !sendMessage.trim() || !sessaoSelecionada) return;
+    setSending(true);
+    try {
+      await fetch(`/api/whatsapp/session/${sessaoSelecionada}/send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
+        body: JSON.stringify({ jid: sendLead.telefone + '@c.us', message: sendMessage })
+      });
+      closeSendModal();
+      carregarLeads();
+    } catch (err) {
+      setSending(false);
+      alert('Erro ao enviar mensagem');
     }
   };
 
@@ -124,28 +219,55 @@ const Leads = () => {
     return matchesSearch && matchesStatus;
   });
 
+  // Cálculo de estatísticas
+  const totalLeads = safeLeads.length;
+  const leadsQuentes = safeLeads.filter(l => l.status === 'quente').length;
+  const leadsResponderam = safeLeads.filter(l => (l.respostas || 0) > 0).length;
+  const leadsPendentes = safeLeads.filter(l => l.status === 'pendente').length;
+  const taxaResposta = totalLeads > 0 ? (leadsResponderam / totalLeads) * 100 : 0;
+
   const stats = [
-    { label: 'Total de Leads', value: safeLeads.length, icon: Users },
-    { label: 'Leads Quentes', value: safeLeads.filter(l => l.status === 'quente').length, icon: Users },
-    { label: 'Responderam', value: safeLeads.filter(l => l.status === 'respondido').length, icon: Check },
-    { label: 'Pendentes', value: safeLeads.filter(l => l.status === 'pendente').length, icon: Clock }
+    { label: 'Total de Leads', value: totalLeads, icon: Users },
+    { label: 'Leads Quentes', value: leadsQuentes, icon: Users },
+    { label: 'Responderam', value: leadsResponderam, icon: Check },
+    { label: 'Pendentes', value: leadsPendentes, icon: Clock }
   ];
 
   const getStatusBadge = (status) => {
     const configs = {
-      'quente': { variant: 'default', color: 'bg-red-500', label: 'Quente' },
-      'respondido': { variant: 'default', color: 'bg-green-500', label: 'Respondeu' },
-      'enviado': { variant: 'secondary', color: 'bg-blue-500', label: 'Enviado' },
-      'ignorado': { variant: 'secondary', color: 'bg-gray-500', label: 'Ignorado' },
-      'pendente': { variant: 'outline', color: 'bg-yellow-500', label: 'Pendente' }
+      'quente': { variant: 'default', color: 'bg-red-500', dot: 'bg-red-600', label: 'Quente' },
+      'morno': { variant: 'default', color: 'bg-yellow-200', dot: 'bg-yellow-500', label: 'Morno' },
+      'frio': { variant: 'default', color: 'bg-blue-200', dot: 'bg-blue-500', label: 'Frio' },
+      'respondido': { variant: 'default', color: 'bg-green-500', dot: 'bg-green-600', label: 'Respondeu' },
+      'enviado': { variant: 'secondary', color: 'bg-blue-500', dot: 'bg-blue-600', label: 'Enviado' },
+      'ignorado': { variant: 'secondary', color: 'bg-gray-500', dot: 'bg-gray-600', label: 'Ignorado' },
+      'pendente': { variant: 'outline', color: 'bg-yellow-500', dot: 'bg-yellow-600', label: 'Pendente' }
     };
-    const config = configs[status] || { variant: 'outline', color: '', label: status };
+    const config = configs[status] || { variant: 'outline', color: '', dot: '', label: status };
     return (
-      <Badge variant={config.variant} className="gap-1">
-        <div className={`w-2 h-2 rounded-full ${config.color}`}></div>
+      <Badge variant={config.variant} className={`gap-1 ${config.color}`.trim()} style={{ display: 'inline-flex', alignItems: 'center' }}>
+        <span className={`w-2 h-2 rounded-full ${config.dot} mr-1`} />
         {config.label}
       </Badge>
     );
+  };
+
+  // Função para exportar leads em CSV
+  const exportarLeadsCSV = () => {
+    const csvHeader = 'Nome;Telefone;Cidade;Categoria;Status;Último Contato;Respostas\r\n';
+    const csvRows = filteredLeads.map(lead => [
+      (lead.nome || '').replace(/;/g, ','),
+      (lead.telefone || '').replace(/;/g, ','),
+      (lead.cidade || '').replace(/;/g, ','),
+      (lead.categoria || '').replace(/;/g, ','),
+      (lead.status || '').replace(/;/g, ','),
+      (lead.ultimoContato ? new Date(lead.ultimoContato).toLocaleDateString('pt-BR') : ''),
+      (lead.respostas || 0)
+    ].join(';'));
+    // Adiciona BOM UTF-8 para Excel reconhecer acentuação
+    const csvContent = '\uFEFF' + csvHeader + csvRows.join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    saveAs(blob, 'leads.csv');
   };
 
   return (
@@ -156,10 +278,16 @@ const Leads = () => {
           <h1 className="text-3xl font-bold text-foreground">Gestão de Leads</h1>
           <p className="text-muted-foreground">Gerencie e acompanhe todos os seus prospects</p>
         </div>
-        <Button className="gap-2 bg-gradient-primary text-white">
-          <MessageSquare className="w-4 h-4" />
-          Importar Leads
-        </Button>
+        <div className="flex gap-2">
+          <Button className="gap-2 bg-gradient-primary text-white">
+            <MessageSquare className="w-4 h-4" />
+            Importar Leads
+          </Button>
+          <Button className="gap-2 bg-gradient-primary text-white" onClick={exportarLeadsCSV}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 16.5a1 1 0 0 1-1-1V5.83l-3.59 3.58A1 1 0 0 1 6 8.59a1 1 0 0 1 0-1.41l5-5a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1-1.41 1.41L13 5.83V15.5a1 1 0 0 1-1 1Z"/><path fill="currentColor" d="M19 20.5H5a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2Z"/></svg>
+            Exportar Leads
+          </Button>
+        </div>
       </div>
 
       <form onSubmit={handleCriar} className="flex flex-wrap gap-2 items-end">
@@ -284,10 +412,10 @@ const Leads = () => {
                     {getStatusBadge(lead.status)}
                   </TableCell>
                   <TableCell>
-                    {lead.lastContact ? new Date(lead.lastContact).toLocaleDateString('pt-BR') : '-'}
+                    {lead.ultimoContato ? new Date(lead.ultimoContato).toLocaleDateString('pt-BR') : '-'}
                   </TableCell>
                   <TableCell>
-                      <Badge variant="secondary">{lead.responses || 0}</Badge>
+                      <Badge variant="secondary">{lead.respostas || 0}</Badge>
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -297,12 +425,13 @@ const Leads = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="bg-popover">
-                        <DropdownMenuItem>Ver Conversa</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEditModal(lead)}>Editar Lead</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => navigate(`/conversas-whatsapp?lead=${encodeURIComponent(lead.telefone)}`)}>Ver Conversa</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openSendModal(lead)}>Enviar Mensagem</DropdownMenuItem>
                         <DropdownMenuItem>Marcar como Quente</DropdownMenuItem>
-                        <DropdownMenuItem>Enviar Mensagem</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive" onClick={() => handleExcluir(lead.id)}>
-                            Parar Follow-up / Excluir
+                        <DropdownMenuItem className="text-destructive" onClick={() => { closeEditModal(); setTimeout(() => handleExcluir(lead.id), 100); }}>
+                          Parar Follow-up / Excluir
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -314,6 +443,50 @@ const Leads = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Modal de edição do lead */}
+      <Dialog open={!!editLead} onOpenChange={closeEditModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar Lead</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-2">
+            <Input placeholder="Nome" value={editNome} onChange={e => setEditNome(e.target.value)} />
+            <Input placeholder="Telefone" value={editTelefone} onChange={e => setEditTelefone(e.target.value)} />
+            <Input placeholder="Cidade" value={editCidade} onChange={e => setEditCidade(e.target.value)} />
+            <Input placeholder="Categoria" value={editCategoria} onChange={e => setEditCategoria(e.target.value)} />
+          </div>
+          <DialogFooter>
+            <Button onClick={handleEditSave}>Salvar</Button>
+            <Button variant="outline" onClick={closeEditModal}>Cancelar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Modal de envio de mensagem */}
+      <Dialog open={!!sendLead} onOpenChange={closeSendModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Enviar Mensagem</DialogTitle>
+          </DialogHeader>
+          {sendLead && (
+            <div className="flex flex-col gap-2">
+              <div><b>{sendLead.nome}</b> <span className="text-muted-foreground">({sendLead.telefone})</span></div>
+              <select className="border rounded p-2" value={sessaoSelecionada} onChange={e => setSessaoSelecionada(e.target.value)} disabled={sending} required>
+                <option value="">Selecione a sessão do WhatsApp</option>
+                {sessoes.map(s => (
+                  <option key={s.id} value={s.id}>{s.id} ({s.status})</option>
+                ))}
+              </select>
+              <Input placeholder="Digite a mensagem..." value={sendMessage} onChange={e => setSendMessage(e.target.value)} disabled={sending} />
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={handleSendMessage} disabled={sending || !sendMessage.trim() || !sessaoSelecionada}>Enviar</Button>
+            <Button variant="outline" onClick={closeSendModal} disabled={sending}>Cancelar</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

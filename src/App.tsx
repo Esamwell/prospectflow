@@ -12,11 +12,12 @@ import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import Usuarios from "./pages/Usuarios";
 import Mensagens from "./pages/Mensagens";
-import ConexaoWhatsApp from "./pages/ConexaoWhatsApp";
 import LeadsCampanha from "./pages/LeadsCampanha";
 import ScrapingLeads from "./pages/ScrapingLeads";
 import WhatsAppSessoes from "./pages/WhatsAppSessoes";
 import Login from "./pages/Login";
+import ConversasWhatsApp from "./pages/ConversasWhatsApp";
+import CompanyProfiles from "./pages/CompanyProfiles";
 
 const queryClient = new QueryClient();
 
@@ -36,10 +37,11 @@ const App = () => (
             <Route path="settings" element={<Settings />} />
             <Route path="usuarios" element={<Usuarios />} />
             <Route path="mensagens" element={<Mensagens />} />
-            <Route path="conexao-whatsapp" element={<ConexaoWhatsApp />} />
             <Route path="leads-campanha" element={<LeadsCampanha />} />
             <Route path="scraping-leads" element={<ScrapingLeads />} />
             <Route path="whatsapp-sessoes" element={<WhatsAppSessoes />} />
+            <Route path="conversas-whatsapp" element={<ConversasWhatsApp />} />
+            <Route path="company-profiles" element={<CompanyProfiles />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

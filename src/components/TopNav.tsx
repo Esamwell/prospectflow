@@ -13,17 +13,20 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Settings, Users } from 'lucide-react';
 
-const API_STATUS = 'http://localhost:4000/api/whatsapp/status';
+const API_STATUS = '/api/whatsapp/status-web';
 
-export function TopNav() {
+export function TopNav({ onToggleSidebar }) {
   const navigate = useNavigate();
   const [waStatus, setWaStatus] = useState('');
 
   useEffect(() => {
     const fetchStatus = () => {
-      fetch(API_STATUS)
+      fetch('/api/whatsapp/sessions')
         .then(res => res.json())
-        .then(data => setWaStatus(data.status));
+        .then(data => {
+          const anyConnected = Array.isArray(data) && data.some(s => s.status === 'conectado');
+          setWaStatus(anyConnected ? 'conectado' : 'desconectado');
+        });
     };
     fetchStatus();
     const interval = setInterval(fetchStatus, 5000);
@@ -42,12 +45,21 @@ export function TopNav() {
     navigate('/login');
   };
 
+  const getInitials = (name) => {
+    if (!name) return 'US';
+    const parts = name.trim().split(' ');
+    if (parts.length === 1) return parts[0][0].toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  };
+
   return (
     <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
-        <SidebarTrigger />
+        <Button variant="ghost" className="mr-2" onClick={onToggleSidebar}>
+          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 15h6"/></svg>
+        </Button>
         <div>
-          <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+          <h1 className="text-lg font-semibold text-foreground">Olá, {user.nome || 'Usuário'}</h1>
           <p className="text-sm text-muted-foreground">Bem-vindo ao ProspectFlow</p>
         </div>
       </div>
@@ -65,7 +77,7 @@ export function TopNav() {
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback>JS</AvatarFallback>
+                <AvatarFallback>{getInitials(user.nome)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>

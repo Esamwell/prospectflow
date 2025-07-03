@@ -89,12 +89,9 @@ const LeadsCampanha = () => {
     }
   };
 
-  const handleRemover = async (leadId) => {
+  const handleRemover = async (campaignLeadId) => {
     setErro(''); setSucesso('');
-    // Encontrar o id da associação
-    const assoc = leadsCampanha.find(l => l.id === leadId || l.leadId === leadId);
-    if (!assoc) return;
-    const res = await fetch(`${API_CAMPAIGN_LEADS}/${assoc.id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_CAMPAIGN_LEADS}/${campaignLeadId}`, { method: 'DELETE' });
     if (res.ok) {
       setSucesso('Lead removido!');
       fetch(`${API_CAMPAIGN_LEADS}/${campanhaId}`).then(res => res.json()).then(setLeadsCampanha);
@@ -145,12 +142,12 @@ const LeadsCampanha = () => {
                   </thead>
                   <tbody>
                     {safeLeadsCampanha.map((l) => (
-                      <tr key={l.id || l.leadId}>
+                      <tr key={l.campaignLeadId}>
                         <td className="px-4 py-2 border-b">{l.nome}</td>
                         <td className="px-4 py-2 border-b">{l.telefone}</td>
                         <td className="px-4 py-2 border-b">{l.cidade}</td>
                         <td className="px-4 py-2 border-b">
-                          <Button variant="destructive" size="sm" onClick={() => handleRemover(l.id || l.leadId)}>Remover</Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleRemover(l.campaignLeadId)}>Remover</Button>
                         </td>
                       </tr>
                     ))}

@@ -4,6 +4,7 @@ import Message from './Message.js';
 import User from './User.js';
 import Followup from './Followup.js';
 import CampaignLead from './CampaignLead.js';
+import Company from './Company.js';
 
 // Associações
 Lead.hasMany(Message, { foreignKey: 'leadId' });
@@ -24,4 +25,7 @@ CampaignLead.belongsTo(Campaign, { foreignKey: 'campaignId' });
 Lead.hasMany(CampaignLead, { foreignKey: 'leadId' });
 Campaign.hasMany(CampaignLead, { foreignKey: 'campaignId' });
 
-export { Lead, Campaign, Message, User, Followup, CampaignLead }; 
+Campaign.belongsTo(Company, { foreignKey: 'companyId' });
+Company.hasMany(Campaign, { foreignKey: 'companyId' });
+
+export { Lead, Campaign, Message, User, Followup, CampaignLead, Company }; 

@@ -12,6 +12,7 @@ import {
   Calendar,
   Search
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const API_DASHBOARD = 'http://localhost:4000/api/dashboard';
 
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [dados, setDados] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [erro, setErro] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(API_DASHBOARD)
@@ -146,17 +148,17 @@ const Dashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button variant="outline" className="p-6 h-auto flex-col gap-2">
+            <Button variant="outline" className="p-6 h-auto flex-col gap-2" onClick={() => navigate('/scraping-leads')}>
               <Search className="w-6 h-6" />
               <span>Buscar Leads</span>
               <span className="text-xs text-muted-foreground">Encontre novos prospects</span>
             </Button>
-            <Button variant="outline" className="p-6 h-auto flex-col gap-2">
+            <Button variant="outline" className="p-6 h-auto flex-col gap-2" onClick={() => navigate('/campaigns')}>
               <MessageSquare className="w-6 h-6" />
               <span>Criar Campanha</span>
               <span className="text-xs text-muted-foreground">Configure uma nova campanha</span>
             </Button>
-            <Button variant="outline" className="p-6 h-auto flex-col gap-2">
+            <Button variant="outline" className="p-6 h-auto flex-col gap-2" onClick={() => navigate('/leads')}>
               <Users className="w-6 h-6" />
               <span>Ver Leads</span>
               <span className="text-xs text-muted-foreground">Gerencie seus contatos</span>

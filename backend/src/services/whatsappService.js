@@ -1,6 +1,7 @@
 import * as baileys from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import fs from 'fs';
+import qrcode from 'qrcode-terminal';
 
 const { makeWASocket, useMultiFileAuthState, DisconnectReason } = baileys;
 
@@ -11,14 +12,15 @@ let isConnected = false;
 export async function startWhatsApp() {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth');
   sock = makeWASocket({
-    auth: state,
-    printQRInTerminal: true,
+    auth: state
   });
 
   sock.ev.on('connection.update', (update) => {
     const { connection, lastDisconnect, qr } = update;
     if (qr) {
       qrCode = qr;
+      // Exibe o QR no terminal
+      qrcode.generate(qr, { small: true });
     }
     if (connection === 'close') {
       isConnected = false;

@@ -8,7 +8,10 @@ router.get('/:campaignId', async (req, res) => {
     where: { campaignId: req.params.campaignId },
     include: [Lead]
   });
-  res.json(leads.map(cl => cl.Lead));
+  res.json(leads.map(cl => ({
+    ...cl.Lead.dataValues,
+    campaignLeadId: cl.id
+  })));
 });
 
 // Adicionar lead a campanha

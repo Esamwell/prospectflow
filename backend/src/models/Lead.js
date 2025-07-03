@@ -12,6 +12,9 @@ const Lead = sequelize.define('Lead', {
   categoria: { type: DataTypes.STRING },
   site: { type: DataTypes.STRING },
   status: { type: DataTypes.STRING, defaultValue: 'pendente' },
+  foto: { type: DataTypes.STRING },
+  ultimoContato: { type: DataTypes.DATE },
+  respostas: { type: DataTypes.INTEGER, defaultValue: 0 },
 }, {
   tableName: 'leads',
   timestamps: true,

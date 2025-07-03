@@ -9,6 +9,7 @@ const Message = sequelize.define('Message', {
   enviada: { type: DataTypes.BOOLEAN, defaultValue: false },
   resposta: { type: DataTypes.TEXT },
   dataEnvio: { type: DataTypes.DATE },
+  sessionId: { type: DataTypes.STRING },
 }, {
   tableName: 'messages',
   timestamps: true,
