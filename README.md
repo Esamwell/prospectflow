@@ -12,8 +12,9 @@ O **ProspectFlow** é um sistema completo para automação de prospecção de cl
 
 ## Funcionalidades Principais ✨
 
-- 🔍 **Scraping de Leads**: Busque leads diretamente do Google Maps/Meu Negócio usando Puppeteer.
-- 📲 **Envio Automático de Mensagens**: Integração com WhatsApp via Baileys para disparo e follow-up automático.
+- 🔍 **Scraping de Leads**: Busque leads diretamente do Google Maps/Meu Negócio usando Puppeteer, com barra de progresso animada durante a coleta.
+- 📲 **Envio Automático de Mensagens**: Integração com WhatsApp via whatsapp-web.js para disparo e follow-up automático.
+- 🖼️ **Envio e Recebimento de Mídias**: Suporte a envio e recebimento de imagens e áudios (incluindo gravação de áudio pelo navegador, se suportado).
 - 📊 **Dashboard em Tempo Real**: Visualize métricas de leads, campanhas, taxa de resposta, atividades recentes e muito mais.
 - 🗂️ **Gestão de Leads, Campanhas e Mensagens**: CRUD completo, busca global e filtros inteligentes.
 - 👥 **Multiusuário & Permissões**: Controle de acesso, autenticação JWT, painel de usuários e configurações.
@@ -21,13 +22,15 @@ O **ProspectFlow** é um sistema completo para automação de prospecção de cl
 - 🔐 **Autenticação Segura**: Login, logout, proteção de rotas e tratamento de sessão expirada.
 - 🛠️ **Multi-sessão WhatsApp**: Gerencie várias conexões, QR Code, status em tempo real e reconexão automática.
 - ⚙️ **Configurações do Usuário**: Edite nome, e-mail e senha facilmente.
+- 🖌️ **Layout Moderno**: Interface inspirada no Materio, responsiva, com experiência de usuário aprimorada.
+- 📥 **Importação de Leads via CSV**: Baixe o modelo, preencha e importe facilmente.
 
 ---
 
 ## Tecnologias Utilizadas 🛠️
 
 - **Frontend:** React, Vite, TypeScript, Tailwind CSS, shadcn-ui
-- **Backend:** Node.js, Express, Sequelize, MySQL, Baileys, Puppeteer
+- **Backend:** Node.js, Express, Sequelize, MySQL, whatsapp-web.js, Puppeteer
 
 ---
 
