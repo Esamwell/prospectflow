@@ -2,7 +2,15 @@ import express from 'express';
 import { getQR, getStatus, sendMessageJid } from '../services/whatsappService.js';
 import { getStatus as getStatusWeb, getQRWeb, createSession, listSessions, getSessionStatus, sendMessageSession } from '../services/whatsappWebService.js';
 import { Lead, Message } from '../models/index.js';
+import multer from 'multer';
+import path from 'path';
+import pkg from 'whatsapp-web.js';
+import fs from 'fs';
+const { MessageMedia } = pkg;
+
 const router = express.Router();
+
+const upload = multer({ dest: path.join(process.cwd(), 'backend/uploads') });
 
 router.get('/status', (req, res) => {
   res.json({ status: getStatus() });
@@ -127,6 +135,30 @@ router.get('/:sessionId/mensagens/:leadId', async (req, res) => {
     });
     res.json(mensagens);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Enviar mídia por sessão
+router.post('/session/:id/send-media', upload.single('file'), async (req, res) => {
+  const { jid } = req.body;
+  console.log('Recebendo upload de mídia...');
+  if (!jid || !req.file) {
+    console.error('jid ou arquivo ausente', { jid, file: !!req.file });
+    return res.status(400).json({ error: 'jid e arquivo obrigatórios' });
+  }
+  try {
+    const filePath = req.file.path;
+    const mimetype = req.file.mimetype;
+    console.log('Arquivo recebido:', filePath, mimetype);
+    const data = fs.readFileSync(filePath, { encoding: 'base64' });
+    const media = new MessageMedia(mimetype, data, req.file.originalname);
+    console.log('Enviando mídia para o WhatsApp...');
+    await sendMessageSession(req.params.id, jid, media);
+    console.log('Mídia enviada com sucesso!');
+    res.json({ success: true });
+  } catch (err) {
+    console.error('Erro ao enviar mídia:', err);
     res.status(500).json({ error: err.message });
   }
 });

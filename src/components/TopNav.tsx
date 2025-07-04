@@ -53,35 +53,35 @@ export function TopNav({ onToggleSidebar }) {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
+    <header className="h-16 bg-white dark:bg-[#181C23] border-b border-border shadow-sm flex items-center justify-between px-6 transition-all duration-300" style={{ fontFamily: 'Inter, sans-serif', zIndex: 20 }}>
       <div className="flex items-center gap-4">
-        <Button variant="ghost" className="mr-2" onClick={onToggleSidebar}>
+        <Button variant="ghost" className="mr-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#23272f] p-2 transition-colors" size="icon" onClick={onToggleSidebar}>
           <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 15h6"/></svg>
         </Button>
         <div>
-          <h1 className="text-lg font-semibold text-foreground">Olá, {user.nome || 'Usuário'}</h1>
-          <p className="text-sm text-muted-foreground">Bem-vindo ao ProspectFlow</p>
+          <h1 className="text-lg font-semibold text-foreground leading-tight">Olá, {user.nome || 'Usuário'}</h1>
+          <p className="text-xs text-muted-foreground leading-tight">Bem-vindo ao ProspectFlow</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-6">
         <div className="flex items-center gap-2 text-sm">
-          <div className={`w-2 h-2 rounded-full ${waStatus === 'conectado' ? 'bg-success' : 'bg-yellow-500'}`}></div>
-          <span className="text-muted-foreground">
+          <div className={`w-2 h-2 rounded-full ${waStatus === 'conectado' ? 'bg-success' : 'bg-yellow-500'} transition-colors`} />
+          <span className="text-muted-foreground select-none">
             {waStatus === 'conectado' ? 'WhatsApp conectado' : 'WhatsApp desconectado'}
           </span>
         </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
+            <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 hover:bg-gray-100 dark:hover:bg-[#23272f] transition-colors">
+              <Avatar className="h-10 w-10">
                 <AvatarImage src={user.avatar} alt={user.name} />
                 <AvatarFallback>{getInitials(user.nome)}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-popover" align="end" forceMount>
+          <DropdownMenuContent className="w-56 bg-popover shadow-lg border border-border" align="end" forceMount>
             <DropdownMenuLabel className="font-normal">
               <div className="flex flex-col space-y-1">
                 <p className="text-sm font-medium leading-none">{user.nome || 'Usuário'}</p>

@@ -31,6 +31,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { saveAs } from 'file-saver';
+import Papa from 'papaparse';
 
 const API_URL = 'http://localhost:4000/api/leads';
 
@@ -56,6 +57,7 @@ const Leads = () => {
   const [sessoes, setSessoes] = useState([]);
   const [sessaoSelecionada, setSessaoSelecionada] = useState('');
   const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   const carregarLeads = () => {
     setLoading(true);
@@ -270,6 +272,44 @@ const Leads = () => {
     saveAs(blob, 'leads.csv');
   };
 
+  const handleImportClick = () => {
+    if (fileInputRef.current) fileInputRef.current.value = null;
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        const importedLeads = results.data;
+        let success = 0, fail = 0;
+        for (const lead of importedLeads) {
+          const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+            },
+            body: JSON.stringify(lead)
+          });
+          if (res.ok) success++;
+          else fail++;
+        }
+        setSucesso(`${success} leads importados com sucesso!`);
+        if (fail) setErro(`${fail} leads falharam ao importar.`);
+        carregarLeads();
+      },
+      error: () => setErro('Erro ao ler o arquivo CSV')
+    });
+  };
+
+  const handleDownloadModelo = () => {
+    window.open('/modelo_leads.csv', '_blank');
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -279,9 +319,19 @@ const Leads = () => {
           <p className="text-muted-foreground">Gerencie e acompanhe todos os seus prospects</p>
         </div>
         <div className="flex gap-2">
-          <Button className="gap-2 bg-gradient-primary text-white">
+          <Button className="gap-2 bg-gradient-primary text-white" onClick={handleImportClick}>
             <MessageSquare className="w-4 h-4" />
             Importar Leads
+          </Button>
+          <input
+            type="file"
+            accept=".csv"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+          />
+          <Button className="gap-2 bg-gradient-primary text-white" onClick={handleDownloadModelo}>
+            Modelo
           </Button>
           <Button className="gap-2 bg-gradient-primary text-white" onClick={exportarLeadsCSV}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M12 16.5a1 1 0 0 1-1-1V5.83l-3.59 3.58A1 1 0 0 1 6 8.59a1 1 0 0 1 0-1.41l5-5a1 1 0 0 1 1.41 0l5 5a1 1 0 0 1-1.41 1.41L13 5.83V15.5a1 1 0 0 1-1 1Z"/><path fill="currentColor" d="M19 20.5H5a1 1 0 0 1 0-2h14a1 1 0 0 1 0 2Z"/></svg>

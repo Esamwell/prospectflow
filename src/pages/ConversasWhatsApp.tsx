@@ -20,6 +20,8 @@ interface Message {
   conteudo: string;
   enviada: boolean;
   dataEnvio: string;
+  tipo: string;
+  caminhoArquivo?: string;
 }
 
 const ConversasWhatsApp: React.FC = () => {
@@ -33,6 +35,9 @@ const ConversasWhatsApp: React.FC = () => {
   const pollingRef = useRef<NodeJS.Timeout | null>(null);
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [recording, setRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
 
   useEffect(() => {
     fetchSessoes();
@@ -126,6 +131,76 @@ const ConversasWhatsApp: React.FC = () => {
     setLoading(false);
   };
 
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!selectedLead || !sessaoSelecionada || !e.target.files?.length) return;
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('jid', selectedLead.telefone + '@c.us');
+    try {
+      await axios.post(`/api/whatsapp/session/${sessaoSelecionada}/send-media`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      fetchMessages(selectedLead);
+    } catch (err) {
+      alert('Erro ao enviar arquivo');
+    }
+  };
+
+  const handleStartRecording = async () => {
+    if (!navigator.mediaDevices) {
+      alert('Seu navegador não suporta gravação de áudio.');
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      let options = { mimeType: 'audio/ogg; codecs=opus' };
+      let mediaRecorder;
+      if (MediaRecorder.isTypeSupported(options.mimeType)) {
+        mediaRecorder = new MediaRecorder(stream, options);
+      } else {
+        alert('Seu navegador não suporta gravação de áudio em OGG/Opus. Não será possível enviar áudios pelo WhatsApp.');
+        return;
+      }
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/ogg; codecs=opus' });
+        if (!selectedLead || !sessaoSelecionada) return;
+        const formData = new FormData();
+        formData.append('file', audioBlob, 'audio.ogg');
+        formData.append('jid', selectedLead.telefone + '@c.us');
+        try {
+          await axios.post(`/api/whatsapp/session/${sessaoSelecionada}/send-media`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          });
+          fetchMessages(selectedLead);
+        } catch (err) {
+          alert('Erro ao enviar áudio');
+        }
+      };
+      mediaRecorder.start();
+      setRecording(true);
+    } catch (err) {
+      alert('Não foi possível acessar o microfone.');
+    }
+  };
+
+  const handleStopRecording = () => {
+    if (mediaRecorderRef.current && recording) {
+      mediaRecorderRef.current.stop();
+      setRecording(false);
+    }
+  };
+
+  const leadsUnicos = leads.filter(
+    (lead, index, self) =>
+      self.findIndex(l => l.telefone === lead.telefone) === index
+  );
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 80px)', border: '1px solid #eee', borderRadius: 8, overflow: 'hidden' }}>
       {/* Seleção de sessão */}
@@ -143,7 +218,7 @@ const ConversasWhatsApp: React.FC = () => {
         <div style={{ width: 300, borderRight: '1px solid #eee', overflowY: 'auto' }}>
           <h3 style={{ margin: 16 }}>Conversas</h3>
           {loading && leads.length === 0 && <div style={{ margin: 16 }}>Carregando...</div>}
-          {leads.map(lead => (
+          {leadsUnicos.map(lead => (
             <div
               key={lead.id}
               style={{
@@ -224,7 +299,16 @@ const ConversasWhatsApp: React.FC = () => {
                       maxWidth: '70%',
                       wordBreak: 'break-word',
                     }}>
-                      {msg.conteudo}
+                      {msg.tipo === 'imagem' && msg.caminhoArquivo ? (
+                        <img src={msg.caminhoArquivo} alt="imagem" style={{ maxWidth: 200, borderRadius: 12 }} />
+                      ) : msg.tipo === 'audio' && msg.caminhoArquivo ? (
+                        <audio controls style={{ width: 200 }}>
+                          <source src={msg.caminhoArquivo} />
+                          Seu navegador não suporta áudio.
+                        </audio>
+                      ) : (
+                        msg.conteudo
+                      )}
                     </span>
                     <div style={{ fontSize: 10, color: '#888', marginTop: 2 }}>
                       {new Date(msg.dataEnvio).toLocaleString()}
@@ -248,6 +332,19 @@ const ConversasWhatsApp: React.FC = () => {
                 style={{ flex: 1, padding: 12, borderRadius: 16, border: '1px solid #ccc', marginRight: 8 }}
                 ref={inputRef}
               />
+              <label style={{ marginRight: 8, cursor: 'pointer' }} title="Enviar imagem ou áudio">
+                <input type="file" accept="image/*,audio/*" style={{ display: 'none' }} onChange={handleUpload} />
+                <span style={{ fontSize: 22, color: '#4caf50' }}>📎</span>
+              </label>
+              <button
+                onMouseDown={handleStartRecording}
+                onMouseUp={handleStopRecording}
+                onMouseLeave={handleStopRecording}
+                style={{ padding: '12px', borderRadius: '50%', border: 'none', background: recording ? '#f44336' : '#2196f3', color: '#fff', fontWeight: 'bold', cursor: 'pointer', marginRight: 8 }}
+                title={recording ? 'Gravando...' : 'Segure para gravar áudio'}
+              >
+                {recording ? '🔴' : '🎤'}
+              </button>
               <button
                 onClick={handleSend}
                 style={{ padding: '12px 24px', borderRadius: 16, border: 'none', background: '#4caf50', color: '#fff', fontWeight: 'bold', cursor: 'pointer' }}

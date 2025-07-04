@@ -146,3 +146,11 @@
     @apply bg-muted-foreground;
   }
 }
+
+@keyframes progress-bar {
+  0% { left: -40%; }
+  100% { left: 100%; }
+}
+.animate-progress-bar {
+  animation: progress-bar 1.2s linear infinite;
+}

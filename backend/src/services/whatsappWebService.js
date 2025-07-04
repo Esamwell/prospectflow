@@ -71,9 +71,27 @@ export function createSession(sessionId) {
         const novasRespostas = (lead.respostas || 0) + 1;
         await lead.update({ nome: nomeContato, foto: fotoContato, ultimoContato: new Date(), respostas: novasRespostas });
       }
+      // --- SUPORTE A MÍDIA ---
+      let conteudo = msg.body;
+      let tipo = 'texto';
+      let caminhoArquivo = null;
+      if (msg.hasMedia) {
+        const media = await msg.downloadMedia();
+        if (media) {
+          const ext = media.mimetype.split('/')[1];
+          const nomeArquivo = `media_${Date.now()}_${Math.floor(Math.random()*10000)}.${ext}`;
+          const caminho = `./uploads/${nomeArquivo}`;
+          require('fs').writeFileSync(caminho, media.data, 'base64');
+          caminhoArquivo = caminho.replace('./', '/');
+          tipo = media.mimetype.startsWith('image') ? 'imagem' : media.mimetype.startsWith('audio') ? 'audio' : media.mimetype;
+          conteudo = `[Arquivo: ${nomeArquivo}]`;
+        }
+      }
       await Message.create({
         leadId: lead.id,
-        conteudo: msg.body,
+        conteudo,
+        tipo,
+        caminhoArquivo,
         enviada: false,
         dataEnvio: new Date(),
         sessionId: sessionId,

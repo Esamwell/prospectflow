@@ -52,9 +52,15 @@ const ScrapingLeads = () => {
           <CardTitle>Leads Coletados ({leads.length})</CardTitle>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="text-center text-muted-foreground">Coletando leads, aguarde...</div>
-          ) : (
+          {loading && (
+            <div className="w-full flex flex-col items-center mb-4">
+              <div className="w-full h-1 bg-gray-200 rounded overflow-hidden relative">
+                <div className="absolute left-0 top-0 h-full bg-blue-500 animate-progress-bar" style={{ width: '40%' }}></div>
+              </div>
+              <span className="text-sm text-muted-foreground mt-2">Coletando leads, aguarde...</span>
+            </div>
+          )}
+          {!loading && (
             <table className="min-w-full border text-left">
               <thead>
                 <tr>
