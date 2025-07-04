@@ -32,7 +32,7 @@ export function AppSidebar({ collapsed = false }) {
       collapsed={collapsed}
     >
       <div className="flex flex-col items-center justify-center py-6">
-        <img src="/logowhite-prospect.png" alt="Logo ProspectFlow" className={`transition-all duration-300 w-16 h-auto mb-2 ${collapsed ? 'scale-75' : 'scale-100'}`} />
+        <img src="/logowhite-prospect.png" alt="Logo ProspectFlow" className={`transition-all duration-300 w-28 h-auto mb-2 ${collapsed ? 'scale-75' : 'scale-100'}`} />
       </div>
       <div className="border-b border-white/20 w-4/5 mx-auto mb-4" />
       <Menu
@@ -64,11 +64,11 @@ export function AppSidebar({ collapsed = false }) {
         <div className={`uppercase text-xs text-white/50 font-bold px-4 pt-2 pb-1 tracking-widest ${collapsed ? 'opacity-0' : 'opacity-100'} transition-opacity duration-200`}>Menu Principal</div>
         <MenuItem icon={<LayoutDashboard />} component={<Link to="/" />} active={location.pathname === '/'}>Dashboard</MenuItem>
         <MenuItem icon={<UserPlus />} component={<Link to="/leads" />} active={location.pathname === '/leads'}>Leads</MenuItem>
-        <MenuItem icon={<Settings />} component={<Link to="/settings" />} active={location.pathname === '/settings'}>Configurações</MenuItem>
         <MenuItem icon={<UserCog />} component={<Link to="/usuarios" />} active={location.pathname === '/usuarios'}>Usuários</MenuItem>
         <MenuItem icon={<Building2 />} component={<Link to="/company-profiles" />} active={location.pathname === '/company-profiles'}>Perfis de Empresa</MenuItem>
         <MenuItem icon={<ListChecks />} component={<Link to="/leads-campanha" />} active={location.pathname === '/leads-campanha'}>Leads por Campanha</MenuItem>
         <MenuItem icon={<SearchIcon />} component={<Link to="/scraping-leads" />} active={location.pathname === '/scraping-leads'}>Scraping de Leads</MenuItem>
+        <MenuItem icon={<Settings />} component={<Link to="/settings" />} active={location.pathname === '/settings'}>Configurações</MenuItem>
         <div className="border-b border-white/10 w-4/5 mx-auto my-3" />
         <div className={`uppercase text-xs text-white/50 font-bold px-4 pt-2 pb-1 tracking-widest ${collapsed ? 'opacity-0' : 'opacity-100'} transition-opacity duration-200`}>Outros</div>
         <SubMenu icon={<MessageSquare />} label="Campanhas e Mensagens">

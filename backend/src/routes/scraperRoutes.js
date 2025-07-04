@@ -3,11 +3,17 @@ import { scrapeGoogleMaps } from '../services/scraperService.js';
 import { Lead } from '../models/index.js';
 const router = express.Router();
 
+// SSE para progresso do scraping
+let scrapingClients = [];
+let scrapingProgress = { current: 0, total: 0 };
+
 router.post('/google-maps', async (req, res) => {
   const { categoria, cidade, estado, maxResults } = req.body;
   if (!categoria || !cidade || !estado) return res.status(400).json({ error: 'Parâmetros obrigatórios' });
   try {
-    const results = await scrapeGoogleMaps({ categoria, cidade, estado, maxResults });
+    // Resetar progresso antes de iniciar
+    updateScrapingProgress(0, maxResults);
+    const results = await scrapeGoogleMaps({ categoria, cidade, estado, maxResults, onProgress: updateScrapingProgress });
     console.log('Resultados brutos do scraping:', results);
     // Logar cada resultado individualmente
     results.forEach((r, idx) => {
@@ -49,5 +55,25 @@ router.post('/google-maps', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+router.get('/google-maps/progresso', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.flushHeaders();
+  scrapingClients.push(res);
+  // Envia progresso inicial
+  res.write(`data: ${JSON.stringify(scrapingProgress)}\n\n`);
+  req.on('close', () => {
+    scrapingClients = scrapingClients.filter(c => c !== res);
+  });
+});
+
+function updateScrapingProgress(current, total) {
+  scrapingProgress = { current, total };
+  scrapingClients.forEach(res => {
+    res.write(`data: ${JSON.stringify(scrapingProgress)}\n\n`);
+  });
+}
 
 export default router; 

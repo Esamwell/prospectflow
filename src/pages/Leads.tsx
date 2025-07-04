@@ -256,7 +256,7 @@ const Leads = () => {
 
   // Função para exportar leads em CSV
   const exportarLeadsCSV = () => {
-    const csvHeader = 'Nome;Telefone;Cidade;Categoria;Status;Último Contato;Respostas\r\n';
+    const csvHeader = 'Nome;Telefone;Cidade;Categoria;Status;Último Contato;Respostas;Site\r\n';
     const csvRows = filteredLeads.map(lead => [
       (lead.nome || '').replace(/;/g, ','),
       (lead.telefone || '').replace(/;/g, ','),
@@ -264,7 +264,8 @@ const Leads = () => {
       (lead.categoria || '').replace(/;/g, ','),
       (lead.status || '').replace(/;/g, ','),
       (lead.ultimoContato ? new Date(lead.ultimoContato).toLocaleDateString('pt-BR') : ''),
-      (lead.respostas || 0)
+      (lead.respostas || 0),
+      (lead.site || '').replace(/;/g, ',')
     ].join(';'));
     // Adiciona BOM UTF-8 para Excel reconhecer acentuação
     const csvContent = '\uFEFF' + csvHeader + csvRows.join('\r\n');
@@ -439,6 +440,7 @@ const Leads = () => {
                 <TableHead>Status</TableHead>
                 <TableHead>Último Contato</TableHead>
                 <TableHead>Respostas</TableHead>
+                <TableHead>Site</TableHead>
                 <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
@@ -447,16 +449,16 @@ const Leads = () => {
                 <TableRow key={lead.id}>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                        <div className="font-medium">{lead.nome}</div>
+                      <div className="font-medium">{lead.nome}</div>
                       {lead.whatsapp && (
                         <Phone className="w-4 h-4 text-green-500" />
                       )}
                     </div>
                   </TableCell>
-                    <TableCell className="font-mono text-sm">{lead.telefone}</TableCell>
-                    <TableCell>{lead.cidade}</TableCell>
+                  <TableCell className="font-mono text-sm">{lead.telefone}</TableCell>
+                  <TableCell>{lead.cidade}</TableCell>
                   <TableCell>
-                      <Badge variant="outline">{lead.categoria}</Badge>
+                    <Badge variant="outline">{lead.categoria}</Badge>
                   </TableCell>
                   <TableCell>
                     {getStatusBadge(lead.status)}
@@ -465,7 +467,16 @@ const Leads = () => {
                     {lead.ultimoContato ? new Date(lead.ultimoContato).toLocaleDateString('pt-BR') : '-'}
                   </TableCell>
                   <TableCell>
-                      <Badge variant="secondary">{lead.respostas || 0}</Badge>
+                    <Badge variant="secondary">{lead.respostas || 0}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {lead.site ? (
+                      <a href={lead.site} target="_blank" rel="noopener noreferrer" className="text-primary underline break-all">
+                        {lead.site.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                      </a>
+                    ) : (
+                      <span className="text-muted-foreground">-</span>
+                    )}
                   </TableCell>
                   <TableCell>
                     <DropdownMenu>

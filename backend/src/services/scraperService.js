@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 
-export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20 }) {
+export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20, onProgress }) {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   const query = `${categoria} em ${cidade} ${estado}`;
@@ -16,6 +16,7 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
   // Scroll dinâmico até carregar todos os resultados ou atingir maxResults
   let previousCount = 0;
   let sameCountTimes = 0;
+  const maxTries = 10;
   while (true) {
     const cardsCount = await page.evaluate(() => document.querySelectorAll('.hfpxzc').length);
     if (cardsCount === previousCount) {
@@ -23,12 +24,12 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
     } else {
       sameCountTimes = 0;
     }
-    if (cardsCount >= maxResults || sameCountTimes >= 3) {
+    if (cardsCount >= maxResults || sameCountTimes >= maxTries) {
       break;
     }
     previousCount = cardsCount;
     await page.keyboard.press('PageDown');
-    await page.waitForTimeout(1200);
+    await page.waitForTimeout(1800); // tempo maior para garantir carregamento
   }
 
   // Esperar resultados carregarem
@@ -53,6 +54,10 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
     if (!link) continue;
     const fullLink = link.startsWith('http') ? link : `https://www.google.com${link}`;
     console.log(`Abrindo cartão ${i + 1}/${cardLinks.length}: ${fullLink}`);
+    // Chamar callback de progresso, se fornecido
+    if (typeof onProgress === 'function') {
+      onProgress(i + 1, cardLinks.length);
+    }
     try {
       await page.goto(fullLink, { waitUntil: 'networkidle2' });
       await page.waitForTimeout(2500);

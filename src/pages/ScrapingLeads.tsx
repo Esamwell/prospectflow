@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const API_SCRAPER = 'http://localhost:4000/api/scraper/google-maps';
+const API_PROGRESSO = 'http://localhost:4000/api/scraper/google-maps/progresso';
 
 const ScrapingLeads = () => {
   const [categoria, setCategoria] = useState('');
@@ -13,6 +14,36 @@ const ScrapingLeads = () => {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(false);
   const [erro, setErro] = useState('');
+  const [progress, setProgress] = useState({ current: 0, total: 0 });
+  const eventSourceRef = useRef(null);
+
+  useEffect(() => {
+    if (loading) {
+      // Conectar ao SSE
+      eventSourceRef.current = new window.EventSource(API_PROGRESSO);
+      eventSourceRef.current.onmessage = (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          setProgress(data);
+        } catch {}
+      };
+      eventSourceRef.current.onerror = () => {
+        eventSourceRef.current?.close();
+      };
+    } else {
+      setProgress({ current: 0, total: 0 });
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+    }
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+    };
+  }, [loading]);
 
   const handleScraping = async (e) => {
     e.preventDefault();
@@ -55,9 +86,11 @@ const ScrapingLeads = () => {
           {loading && (
             <div className="w-full flex flex-col items-center mb-4">
               <div className="w-full h-1 bg-gray-200 rounded overflow-hidden relative">
-                <div className="absolute left-0 top-0 h-full bg-blue-500 animate-progress-bar" style={{ width: '40%' }}></div>
+                <div className="absolute left-0 top-0 h-full bg-blue-500 animate-progress-bar" style={{ width: progress.total > 0 ? `${(progress.current / progress.total) * 100}%` : '10%' }}></div>
               </div>
-              <span className="text-sm text-muted-foreground mt-2">Coletando leads, aguarde...</span>
+              <span className="text-sm text-muted-foreground mt-2">
+                {progress.total > 0 ? `Abrindo cartão ${progress.current} de ${progress.total}` : 'Coletando leads, aguarde...'}
+              </span>
             </div>
           )}
           {!loading && (
