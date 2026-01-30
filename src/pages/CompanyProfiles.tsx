@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 
-const API_URL = '/api/company';
+import { API_BASE } from '@/lib/api';
+const API_URL = `${API_BASE}/api/company`;
 
 const CompanyProfiles = () => {
   const [empresas, setEmpresas] = useState([]);

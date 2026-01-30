@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:4000/api/messages';
+import { API_BASE } from '@/lib/api';
+const API_URL = `${API_BASE}/api/messages`;
 
 const Mensagens = () => {
   const [mensagens, setMensagens] = useState([]);

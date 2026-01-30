@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Settings, Users } from 'lucide-react';
 
-const API_STATUS = '/api/whatsapp/status-web';
+import { API_BASE } from '@/lib/api';
 
 export function TopNav({ onToggleSidebar }) {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export function TopNav({ onToggleSidebar }) {
 
   useEffect(() => {
     const fetchStatus = () => {
-      fetch('/api/whatsapp/sessions')
+      fetch(`${API_BASE}/api/whatsapp/sessions`)
         .then(res => res.json())
         .then(data => {
           const anyConnected = Array.isArray(data) && data.some(s => s.status === 'conectado');

@@ -33,7 +33,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 
-const API_URL = 'http://localhost:4000/api/leads';
+import { API_BASE } from '@/lib/api';
+const API_URL = `${API_BASE}/api/leads`;
 
 const Leads = () => {
   const [leads, setLeads] = useState([]);
@@ -181,7 +182,7 @@ const Leads = () => {
     setSessaoSelecionada('');
     // Buscar sessões ativas
     try {
-      const res = await fetch('/api/whatsapp/sessions');
+      const res = await fetch(`${API_BASE}/api/whatsapp/sessions`);
       const data = await res.json();
       setSessoes(data.filter(s => s.status === 'conectado'));
     } catch {
@@ -199,7 +200,7 @@ const Leads = () => {
     if (!sendLead || !sendMessage.trim() || !sessaoSelecionada) return;
     setSending(true);
     try {
-      await fetch(`/api/whatsapp/session/${sessaoSelecionada}/send`, {
+      await fetch(`${API_BASE}/api/whatsapp/session/${sessaoSelecionada}/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token') },
         body: JSON.stringify({ jid: sendLead.telefone + '@c.us', message: sendMessage })

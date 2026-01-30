@@ -56,6 +56,32 @@ O **ProspectFlow** é um sistema completo para automação de prospecção de cl
 
 ---
 
+## Deploy único na Vercel (frontend + API)
+
+O projeto está configurado para **um único deploy** na Vercel: frontend (Vite) e API (Express) no mesmo domínio.
+
+1. **Conecte o repositório** na Vercel e faça o deploy (raiz do repo = este projeto).
+
+2. **Não defina `VITE_API_URL`** — em produção a API fica no mesmo domínio (`/api/*`).
+
+3. **Configure as variáveis de ambiente do backend** no painel da Vercel (**Settings** → **Environment Variables**), com as mesmas do `backend/.env`:
+   - `DB_HOST` — host do Supabase (ex: `db.xxx.supabase.co`)
+   - `DB_USER` — `postgres`
+   - `DB_PASSWORD` — senha do banco no Supabase
+   - `DB_NAME` — `postgres`
+   - `DB_PORT` — `5432`
+   - `JWT_SECRET` — segredo para tokens JWT
+   - Opcional (se usar em outros serviços): `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+
+4. **Faça o deploy** — a Vercel faz o build do frontend (Vite) e expõe a API em `/api/*` via serverless.
+
+**Limitações na Vercel (serverless):**
+- **WhatsApp**: conexões persistentes e QR Code podem ter restrições (timeout, cold start). Para uso intenso, considere um worker separado.
+- **Follow-up automático**: o agendador que roda a cada minuto não fica ativo (não há processo contínuo). Follow-ups podem ser disparados por cron externo ou em outra plataforma.
+- **Scraping (Puppeteer)**: pode atingir limite de tamanho ou tempo; para muitos acessos, avalie um serviço dedicado.
+
+---
+
 ## Contribua com o ProspectFlow! 🤝
 
 Este projeto é open source e está em constante evolução. Sinta-se à vontade para abrir issues, enviar pull requests ou sugerir melhorias. Sua colaboração é muito bem-vinda!

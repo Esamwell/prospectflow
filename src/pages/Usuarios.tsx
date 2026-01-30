@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
-const API_URL = 'http://localhost:4000/api/users';
+import { API_BASE } from '@/lib/api';
+const API_URL = `${API_BASE}/api/users`;
 
 const Usuarios = () => {
   const [usuarios, setUsuarios] = useState([]);

@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const API_SCRAPER = 'http://localhost:4000/api/scraper/google-maps';
-const API_PROGRESSO = 'http://localhost:4000/api/scraper/google-maps/progresso';
+import { API_BASE } from '@/lib/api';
+const API_SCRAPER = `${API_BASE}/api/scraper/google-maps`;
+const API_PROGRESSO = `${API_BASE}/api/scraper/google-maps/progresso`;
 
 const ScrapingLeads = () => {
   const [categoria, setCategoria] = useState('');

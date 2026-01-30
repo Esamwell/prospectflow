@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Play, Pause, XCircle } from 'lucide-react';
 
-const API_URL = 'http://localhost:4000/api/campaigns';
+import { API_BASE } from '@/lib/api';
+const API_URL = `${API_BASE}/api/campaigns`;
 
 const Campaigns = () => {
   const [campanhas, setCampanhas] = useState([]);
@@ -60,12 +61,12 @@ const Campaigns = () => {
   useEffect(() => {
     carregarCampanhas();
     // Buscar sessões ativas
-    fetch('/api/whatsapp/sessions')
+    fetch(`${API_BASE}/api/whatsapp/sessions`)
       .then(res => res.json())
       .then(data => setSessoes(data.filter(s => s.status === 'conectado')))
       .catch(() => setSessoes([]));
     // Buscar perfis de empresa
-    fetch('/api/company')
+    fetch(`${API_BASE}/api/company`)
       .then(res => res.json())
       .then(data => setEmpresas(Array.isArray(data) ? data : []))
       .catch(() => setEmpresas([]));
@@ -176,7 +177,7 @@ const Campaigns = () => {
     setExecutandoId(id);
     setErro(''); setSucesso('');
     try {
-      const res = await fetch(`/api/campaigns/${id}/start`, {
+      const res = await fetch(`${API_BASE}/api/campaigns/${id}/start`, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
       });
@@ -196,7 +197,7 @@ const Campaigns = () => {
     setExecutandoId(id);
     setErro(''); setSucesso('');
     try {
-      const res = await fetch(`/api/campaigns/${id}/pause`, {
+      const res = await fetch(`${API_BASE}/api/campaigns/${id}/pause`, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
       });
@@ -217,7 +218,7 @@ const Campaigns = () => {
     setExecutandoId(id);
     setErro(''); setSucesso('');
     try {
-      const res = await fetch(`/api/campaigns/${id}/close`, {
+      const res = await fetch(`${API_BASE}/api/campaigns/${id}/close`, {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + localStorage.getItem('token') }
       });

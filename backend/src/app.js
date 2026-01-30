@@ -11,18 +11,21 @@ import authRoutes from './routes/authRoutes.js';
 import auth from './middleware/auth.js';
 import whatsappRoutes from './routes/whatsappRoutes.js';
 import followupRoutes from './routes/followupRoutes.js';
-import './services/followupScheduler.js';
 import campaignLeadRoutes from './routes/campaignLeadRoutes.js';
 import scraperRoutes from './routes/scraperRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
-import { loadSessions } from './services/whatsappWebService.js';
 import companyRoutes from './routes/companyRoutes.js';
 
 dotenv.config();
 
 const app = express();
-app.use(cors());
+const isVercel = process.env.VERCEL === '1';
+
+app.use(cors({
+  origin: isVercel ? true : undefined,
+  credentials: true
+}));
 app.use(bodyParser.json());
 
 // Rotas (exemplo)
@@ -32,8 +35,8 @@ app.get('/', (req, res) => {
 
 // Testar conexão com o banco
 sequelize.authenticate()
-  .then(() => console.log('Conectado ao MySQL!'))
-  .catch(err => console.error('Erro ao conectar ao MySQL:', err));
+  .then(() => console.log('Conectado ao PostgreSQL!'))
+  .catch(err => console.error('Erro ao conectar ao PostgreSQL:', err));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', auth, leadRoutes);
@@ -49,7 +52,14 @@ app.use('/api/search', searchRoutes);
 app.use('/api/company', companyRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-  loadSessions();
-}); 
+
+// Na Vercel não inicia servidor; a app é exportada e usada como serverless
+if (!isVercel) {
+  import('./services/followupScheduler.js');
+  app.listen(PORT, () => {
+    console.log(`Servidor rodando na porta ${PORT}`);
+    import('./services/whatsappWebService.js').then(({ loadSessions }) => loadSessions());
+  });
+}
+
+export default app; 

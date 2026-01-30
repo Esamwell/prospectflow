@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-const API_CAMPAIGNS = 'http://localhost:4000/api/campaigns';
-const API_FOLLOWUPS = 'http://localhost:4000/api/followups';
+import { API_BASE } from '@/lib/api';
+const API_CAMPAIGNS = `${API_BASE}/api/campaigns`;
+const API_FOLLOWUPS = `${API_BASE}/api/followups`;
 
 const Followups = () => {
   const [campanhas, setCampanhas] = useState([]);

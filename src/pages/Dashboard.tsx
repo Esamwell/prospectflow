@@ -14,7 +14,8 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const API_DASHBOARD = 'http://localhost:4000/api/dashboard';
+import { API_BASE } from '@/lib/api';
+const API_DASHBOARD = `${API_BASE}/api/dashboard`;
 
 const Dashboard = () => {
   const [dados, setDados] = useState<any>(null);

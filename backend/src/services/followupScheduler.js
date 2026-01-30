@@ -54,7 +54,9 @@ async function processarFollowups() {
   }
 }
 
-// Agendar execução a cada minuto
-setInterval(processarFollowups, 60 * 1000);
+// Agendar execução a cada minuto (desativado na Vercel - serverless não mantém processo)
+if (!process.env.VERCEL) {
+  setInterval(processarFollowups, 60 * 1000);
+}
 
 export default processarFollowups; 

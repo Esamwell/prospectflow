@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 
-const API_CAMPAIGNS = 'http://localhost:4000/api/campaigns';
-const API_LEADS = 'http://localhost:4000/api/leads';
-const API_CAMPAIGN_LEADS = 'http://localhost:4000/api/campaign-leads';
+import { API_BASE } from '@/lib/api';
+const API_CAMPAIGNS = `${API_BASE}/api/campaigns`;
+const API_LEADS = `${API_BASE}/api/leads`;
+const API_CAMPAIGN_LEADS = `${API_BASE}/api/campaign-leads`;
 
 const LeadsCampanha = () => {
   const [campanhas, setCampanhas] = useState([]);

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
+import { API_BASE } from '@/lib/api';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +17,7 @@ const Login: React.FC = () => {
     setErro('');
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/auth/login', {
+      const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, senha })

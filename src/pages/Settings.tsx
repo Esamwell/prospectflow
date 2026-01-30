@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_URL = 'http://localhost:4000/api/users';
+import { API_BASE } from '@/lib/api';
+const API_URL = `${API_BASE}/api/users`;
 
 const Settings = () => {
   const [user, setUser] = useState<any>(null);
