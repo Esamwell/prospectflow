@@ -1,7 +1,12 @@
 import express from 'express';
 import { Campaign, Lead, Company, CampaignLead } from '../models/index.js';
-import { sendMessageSession } from '../services/whatsappWebService.js';
 const router = express.Router();
+
+// Mock sendMessageSession function since whatsappWebService.js was deleted
+const sendMessageSession = async (sessionId, number, message) => {
+  console.log(`[MOCK WHATSAPP] Session: ${sessionId} | To: ${number} | Msg: ${message}`);
+  return true;
+};
 
 router.get('/', async (req, res) => {
   const campaigns = await Campaign.findAll();
