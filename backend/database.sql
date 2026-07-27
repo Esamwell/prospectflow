@@ -1,14 +1,9 @@
 -- ============================================
--- ProspectFlow - Script completo do banco de dados (PostgreSQL)
--- Execute este arquivo para recriar o banco do zero
+-- ProspectFlow - Script completo do banco de dados (PostgreSQL para Supabase)
+-- Execute este arquivo no SQL Editor do Supabase
 -- ============================================
 
--- Cria o banco (execute conectado em 'postgres' ou outro DB existente)
--- CREATE DATABASE prospectflow;
-
--- Conecte no banco prospectflow antes de rodar o restante (\c prospectflow no psql)
-
--- Função para atualizar "updatedAt" automaticamente (equivalente ao ON UPDATE do MySQL)
+-- Função para atualizar "updatedAt" automaticamente
 CREATE OR REPLACE FUNCTION update_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -18,7 +13,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- --------------------------------------------
--- 1. Empresas/Perfis de empresa (sem dependências)
+-- 1. Empresas (Configurações base da agência)
 -- --------------------------------------------
 CREATE TABLE IF NOT EXISTS company (
   id SERIAL PRIMARY KEY,
@@ -38,7 +33,7 @@ CREATE TRIGGER company_updated_at
   FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
 
 -- --------------------------------------------
--- 2. Usuários
+-- 2. Usuários (Acesso ao sistema)
 -- --------------------------------------------
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
@@ -54,39 +49,13 @@ CREATE TRIGGER users_updated_at
   FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
 
 -- --------------------------------------------
--- 3. Leads
--- --------------------------------------------
-CREATE TABLE IF NOT EXISTS leads (
-  id SERIAL PRIMARY KEY,
-  nome VARCHAR(255) NOT NULL,
-  telefone VARCHAR(50) NOT NULL,
-  whatsapp BOOLEAN DEFAULT FALSE,
-  endereco VARCHAR(255),
-  cidade VARCHAR(100),
-  estado VARCHAR(50),
-  categoria VARCHAR(100),
-  site VARCHAR(255),
-  status VARCHAR(50) DEFAULT 'pendente',
-  foto VARCHAR(255),
-  "ultimoContato" TIMESTAMP,
-  respostas INT DEFAULT 0,
-  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TRIGGER leads_updated_at
-  BEFORE UPDATE ON leads
-  FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
-
--- --------------------------------------------
--- 4. Campanhas (depende de company)
+-- 3. Campanhas / Listas de Prospecção
 -- --------------------------------------------
 CREATE TABLE IF NOT EXISTS campaigns (
   id SERIAL PRIMARY KEY,
   nome VARCHAR(255) NOT NULL,
   descricao VARCHAR(255),
   status VARCHAR(50) DEFAULT 'ativa',
-  "sessionId" VARCHAR(255),
   "companyId" INT,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -98,56 +67,53 @@ CREATE TRIGGER campaigns_updated_at
   FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
 
 -- --------------------------------------------
--- 5. Mensagens (depende de leads e campaigns)
+-- 4. Templates de Mensagem (NOVO)
 -- --------------------------------------------
-CREATE TABLE IF NOT EXISTS messages (
+CREATE TABLE IF NOT EXISTS templates (
   id SERIAL PRIMARY KEY,
-  "leadId" INT NOT NULL,
+  nome VARCHAR(255) NOT NULL,
+  conteudo TEXT NOT NULL,
   "campaignId" INT,
-  conteudo TEXT NOT NULL,
-  enviada BOOLEAN DEFAULT FALSE,
-  resposta TEXT,
-  "dataEnvio" TIMESTAMP,
-  "sessionId" VARCHAR(255),
-  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY ("leadId") REFERENCES leads(id) ON DELETE CASCADE,
-  FOREIGN KEY ("campaignId") REFERENCES campaigns(id) ON DELETE SET NULL
-);
-
-CREATE TRIGGER messages_updated_at
-  BEFORE UPDATE ON messages
-  FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
-
--- --------------------------------------------
--- 6. Follow-ups (depende de campaigns)
--- --------------------------------------------
-CREATE TABLE IF NOT EXISTS followups (
-  id SERIAL PRIMARY KEY,
-  "campaignId" INT NOT NULL,
-  ordem INT NOT NULL,
-  conteudo TEXT NOT NULL,
-  "delayDias" INT NOT NULL DEFAULT 0,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY ("campaignId") REFERENCES campaigns(id) ON DELETE CASCADE
 );
 
-CREATE TRIGGER followups_updated_at
-  BEFORE UPDATE ON followups
+CREATE TRIGGER templates_updated_at
+  BEFORE UPDATE ON templates
   FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
 
 -- --------------------------------------------
--- 7. Leads por campanha (depende de campaigns e leads)
+-- 5. Leads (Prospectos)
+-- --------------------------------------------
+CREATE TABLE IF NOT EXISTS leads (
+  id SERIAL PRIMARY KEY,
+  nome VARCHAR(255) NOT NULL,
+  telefone VARCHAR(50) NOT NULL,
+  whatsapp BOOLEAN DEFAULT TRUE,
+  categoria VARCHAR(100),
+  site VARCHAR(255),
+  status VARCHAR(50) DEFAULT 'Pendente',
+  "ultimoContato" TIMESTAMP,
+  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER leads_updated_at
+  BEFORE UPDATE ON leads
+  FOR EACH ROW EXECUTE PROCEDURE update_updated_at();
+
+-- --------------------------------------------
+-- 6. Leads por Campanha (Relação N:N e tracking)
 -- --------------------------------------------
 CREATE TABLE IF NOT EXISTS campaign_leads (
   id SERIAL PRIMARY KEY,
   "campaignId" INT NOT NULL,
   "leadId" INT NOT NULL,
-  status VARCHAR(50) DEFAULT 'novo',
+  status VARCHAR(50) DEFAULT 'Pendente',
   "ultima_interacao" TIMESTAMP,
   tentativas INT DEFAULT 0,
-  resposta TEXT,
+  observacoes TEXT,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY ("campaignId") REFERENCES campaigns(id) ON DELETE CASCADE,
@@ -165,7 +131,5 @@ CREATE TRIGGER campaign_leads_updated_at
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
 CREATE INDEX IF NOT EXISTS idx_leads_telefone ON leads(telefone);
 CREATE INDEX IF NOT EXISTS idx_campaigns_status ON campaigns(status);
-CREATE INDEX IF NOT EXISTS idx_messages_leadId ON messages("leadId");
-CREATE INDEX IF NOT EXISTS idx_messages_campaignId ON messages("campaignId");
 CREATE INDEX IF NOT EXISTS idx_campaign_leads_campaign ON campaign_leads("campaignId");
 CREATE INDEX IF NOT EXISTS idx_campaign_leads_lead ON campaign_leads("leadId");

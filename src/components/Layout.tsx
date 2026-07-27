@@ -11,13 +11,13 @@ export const Layout = () => {
       <div className="min-h-screen w-full flex bg-background">
         {/* Sidebar com transição suave de largura */}
         <div
-          className={`transition-all duration-300 ease-in-out h-screen z-30 bg-[#181C23] border-r border-[#23272f] ${sidebarCollapsed ? 'w-[80px]' : 'w-[300px]'} fixed top-0 left-0`}
+          className={`transition-all duration-300 ease-in-out h-screen z-30 bg-black border-r border-[#1c1c1e] ${sidebarCollapsed ? 'w-[80px]' : 'w-[280px]'} fixed top-0 left-0`}
         >
           <AppSidebar collapsed={sidebarCollapsed} />
         </div>
         {/* Conteúdo principal */}
         <div
-          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'ml-[80px]' : 'ml-[300px]'}`}
+          className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'ml-[80px]' : 'ml-[280px]'}`}
         >
           <TopNav onToggleSidebar={() => setSidebarCollapsed((prev) => !prev)} />
           <main className="flex-1 p-4 md:p-6 bg-background overflow-auto">

@@ -8,8 +8,6 @@
     "dev": "nodemon src/app.js"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.18",
-    "baileys": "^6.7.4",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -18,7 +16,6 @@
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
-    "puppeteer": "^21.3.8",
     "sequelize": "^6.35.1"
   },
   "devDependencies": {

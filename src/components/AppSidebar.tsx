@@ -16,10 +16,10 @@ export function AppSidebar({ collapsed = false }) {
   const location = useLocation();
   return (
     <Sidebar
-      backgroundColor="#181C23"
-      width={collapsed ? '80px' : '300px'}
+      backgroundColor="#000000"
+      width={collapsed ? '80px' : '280px'}
       rootStyles={{
-        borderRight: '1px solid #23272f',
+        borderRight: '1px solid #1c1c1e',
         height: '100vh',
         position: 'fixed',
         left: 0,
@@ -38,26 +38,25 @@ export function AppSidebar({ collapsed = false }) {
       <Menu
         menuItemStyles={{
           button: ({ active, level }) => ({
-            color: active ? '#2563eb' : '#b6c8d9',
-            background: active ? 'rgba(37,99,235,0.08)' : 'transparent',
-            fontSize: 16,
-            borderRadius: '8px',
-            margin: '8px 12px',
-            padding: collapsed ? '10px 10px' : '12px 18px',
-            fontWeight: active ? 700 : 500,
-            minHeight: 44,
+            color: active ? '#FF9500' : '#8e8e93',
+            background: active ? 'rgba(255, 149, 0, 0.1)' : 'transparent',
+            fontSize: 15,
+            borderRadius: '10px',
+            margin: '6px 12px',
+            padding: collapsed ? '10px 10px' : '10px 16px',
+            fontWeight: active ? 600 : 500,
+            minHeight: 40,
             maxWidth: collapsed ? 60 : 260,
             width: '98%',
             display: 'flex',
             alignItems: 'center',
-            gap: collapsed ? 0 : 14,
+            gap: collapsed ? 0 : 12,
             whiteSpace: 'normal',
             overflow: 'visible',
             textOverflow: 'unset',
-            boxShadow: active ? '0 2px 8px 0 rgba(37,99,235,0.10)' : undefined,
             transition: 'all 0.2s',
           }),
-          icon: ({ active }) => ({ color: active ? '#2563eb' : '#b6c8d9', fontSize: 22, marginRight: collapsed ? 0 : 12, transition: 'all 0.2s' }),
+          icon: ({ active }) => ({ color: active ? '#FF9500' : '#8e8e93', fontSize: 20, marginRight: collapsed ? 0 : 12, transition: 'all 0.2s' }),
           label: { fontSize: 15, transition: 'opacity 0.2s', opacity: collapsed ? 0 : 1 },
         }}
       >
@@ -68,17 +67,10 @@ export function AppSidebar({ collapsed = false }) {
         <MenuItem icon={<Building2 />} component={<Link to="/company-profiles" />} active={location.pathname === '/company-profiles'}>Perfis de Empresa</MenuItem>
         <MenuItem icon={<ListChecks />} component={<Link to="/leads-campanha" />} active={location.pathname === '/leads-campanha'}>Leads por Campanha</MenuItem>
         <MenuItem icon={<SearchIcon />} component={<Link to="/scraping-leads" />} active={location.pathname === '/scraping-leads'}>Scraping de Leads</MenuItem>
+        <div className="border-b border-white/5 w-4/5 mx-auto my-3" />
+        <div className={`uppercase text-xs text-white/40 font-bold px-4 pt-2 pb-1 tracking-widest ${collapsed ? 'opacity-0' : 'opacity-100'} transition-opacity duration-200`}>Ajustes</div>
+        <MenuItem icon={<MessageSquare />} component={<Link to="/templates" />} active={location.pathname === '/templates'}>Templates de Mensagem</MenuItem>
         <MenuItem icon={<Settings />} component={<Link to="/settings" />} active={location.pathname === '/settings'}>Configurações</MenuItem>
-        <div className="border-b border-white/10 w-4/5 mx-auto my-3" />
-        <div className={`uppercase text-xs text-white/50 font-bold px-4 pt-2 pb-1 tracking-widest ${collapsed ? 'opacity-0' : 'opacity-100'} transition-opacity duration-200`}>Outros</div>
-        <SubMenu icon={<MessageSquare />} label="Campanhas e Mensagens">
-          <MenuItem component={<Link to="/campaigns" />}>Listar Campanhas</MenuItem>
-          <MenuItem component={<Link to="/mensagens" />}>Caixa de Mensagens</MenuItem>
-        </SubMenu>
-        <SubMenu icon={<MessageSquare />} label="WhatsApp">
-          <MenuItem component={<Link to="/whatsapp-sessoes" />}>Sessões WhatsApp</MenuItem>
-          <MenuItem component={<Link to="/conversas-whatsapp" />}>Conversas WhatsApp</MenuItem>
-        </SubMenu>
       </Menu>
     </Sidebar>
   );

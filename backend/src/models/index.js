@@ -2,7 +2,7 @@ import Lead from './Lead.js';
 import Campaign from './Campaign.js';
 import Message from './Message.js';
 import User from './User.js';
-import Followup from './Followup.js';
+import Template from './Template.js';
 import CampaignLead from './CampaignLead.js';
 import Company from './Company.js';
 
@@ -13,8 +13,8 @@ Message.belongsTo(Lead, { foreignKey: 'leadId' });
 Campaign.hasMany(Message, { foreignKey: 'campaignId' });
 Message.belongsTo(Campaign, { foreignKey: 'campaignId' });
 
-Campaign.hasMany(Followup, { foreignKey: 'campaignId' });
-Followup.belongsTo(Campaign, { foreignKey: 'campaignId' });
+Campaign.hasMany(Template, { foreignKey: 'campaignId' });
+Template.belongsTo(Campaign, { foreignKey: 'campaignId' });
 
 Campaign.belongsToMany(Lead, { through: CampaignLead, foreignKey: 'campaignId', otherKey: 'leadId' });
 Lead.belongsToMany(Campaign, { through: CampaignLead, foreignKey: 'leadId', otherKey: 'campaignId' });
@@ -28,4 +28,4 @@ Campaign.hasMany(CampaignLead, { foreignKey: 'campaignId' });
 Campaign.belongsTo(Company, { foreignKey: 'companyId' });
 Company.hasMany(Campaign, { foreignKey: 'companyId' });
 
-export { Lead, Campaign, Message, User, Followup, CampaignLead, Company }; 
+export { Lead, Campaign, Message, User, Template, CampaignLead, Company }; 
