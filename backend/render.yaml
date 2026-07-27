@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: prospectflow-backend
+    env: docker
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: ohio
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_PORT
+        value: 6543
+      - key: JWT_SECRET
+        sync: false

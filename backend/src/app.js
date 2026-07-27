@@ -19,10 +19,11 @@ import companyRoutes from './routes/companyRoutes.js';
 dotenv.config();
 
 const app = express();
-const isVercel = process.env.VERCEL === '1';
+const isProduction = process.env.NODE_ENV === 'production';
+const frontendUrl = process.env.FRONTEND_URL;
 
 app.use(cors({
-  origin: isVercel ? true : undefined,
+  origin: frontendUrl || true,
   credentials: true
 }));
 app.use(bodyParser.json());
@@ -50,12 +51,9 @@ app.use('/api/company', companyRoutes);
 
 const PORT = process.env.PORT || 4000;
 
-// Na Vercel não inicia servidor localmente; a app é exportada e usada como serverless
-if (!isVercel) {
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
 
 // Global error handler
 app.use((err, req, res, next) => {

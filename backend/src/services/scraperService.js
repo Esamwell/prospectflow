@@ -1,27 +1,15 @@
-export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20, onProgress }) {
-  let browser;
-  const isVercel = process.env.VERCEL === '1';
+import puppeteer from 'puppeteer';
 
-  if (isVercel) {
-    // Vercel Serverless environment
-    const chromium = (await import('@sparticuz/chromium')).default;
-    const puppeteerCore = (await import('puppeteer-core')).default;
-    
-    // Optional: Chromium settings for serverless
-    chromium.setGraphicsMode = false;
-    const executablePath = await chromium.executablePath();
-    
-    browser = await puppeteerCore.launch({
-      args: chromium.args,
-      defaultViewport: chromium.defaultViewport,
-      executablePath: executablePath,
-      headless: chromium.headless,
-    });
-  } else {
-    // Local environment
-    const puppeteer = (await import('puppeteer')).default;
-    browser = await puppeteer.launch({ headless: true });
-  }
+export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20, onProgress }) {
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-gpu'
+    ]
+  });
 
   const page = await browser.newPage();
   const query = `${categoria} em ${cidade} ${estado}`;
