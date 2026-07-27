@@ -2,8 +2,8 @@ services:
   - type: web
     name: prospectflow-backend
     env: docker
-    dockerContext: .
-    dockerfilePath: ./Dockerfile
+    dockerContext: backend
+    dockerfilePath: backend/Dockerfile
     plan: free
     region: ohio
     envVars:
