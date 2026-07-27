@@ -78,7 +78,7 @@ const Dashboard = () => {
             <Check className="w-4 h-4 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{dados.taxaResposta.toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-foreground">{dados?.taxaResposta?.toFixed(1) || '0.0'}%</div>
             <Badge variant="secondary" className="text-xs mt-1">Atualizado</Badge>
           </CardContent>
         </Card>

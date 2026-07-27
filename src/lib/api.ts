@@ -5,4 +5,4 @@
  */
 export const API_BASE =
   (import.meta.env.VITE_API_URL as string | undefined)?.trim() ||
-  (import.meta.env.DEV ? 'http://localhost:4000' : '');
+  (import.meta.env.DEV ? 'http://localhost:4000' : 'https://prospectflow-backend-0ydl.onrender.com');
