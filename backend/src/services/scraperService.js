@@ -1,6 +1,10 @@
-import puppeteer from 'puppeteer';
-
 export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20, onProgress }) {
+  let puppeteer;
+  try {
+    puppeteer = (await import('puppeteer')).default;
+  } catch (err) {
+    throw new Error("Puppeteer não está instalado ou não é suportado no ambiente atual (ex: Vercel).");
+  }
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   const query = `${categoria} em ${cidade} ${estado}`;
