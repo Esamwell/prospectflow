@@ -1,4 +1,5 @@
 import express from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
@@ -55,5 +56,11 @@ if (!isVercel) {
     console.log(`Servidor rodando na porta ${PORT}`);
   });
 }
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: 'Erro Interno do Servidor', details: err.message });
+});
 
 export default app; 
