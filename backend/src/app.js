@@ -35,7 +35,11 @@ app.get('/', (req, res) => {
 
 // Testar conexão com o banco
 sequelize.authenticate()
-  .then(() => console.log('Conectado ao PostgreSQL!'))
+  .then(() => {
+    console.log('Conectado ao PostgreSQL!');
+    return sequelize.sync({ alter: true });
+  })
+  .then(() => console.log('Banco de dados sincronizado com sucesso!'))
   .catch(err => console.error('Erro ao conectar ao PostgreSQL:', err));
 
 app.use('/api/auth', authRoutes);
