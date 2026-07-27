@@ -103,8 +103,8 @@ const Dashboard = () => {
             <CardDescription>Acompanhe o progresso das suas campanhas ativas</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {dados.campanhasRecentes.map((c, i) => (
-              <div key={c.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+            {(dados?.campanhasRecentes || []).map((c: any, i: number) => (
+              <div key={c.id || i} className="flex items-center justify-between p-4 border border-border rounded-lg">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-foreground">{c.nome}</p>
@@ -129,8 +129,8 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {dados.atividadesRecentes.map((a, i) => (
-                <div key={a.id} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
+              {(dados?.atividadesRecentes || []).map((a: any, i: number) => (
+                <div key={a.id || i} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
                   <div className="w-2 h-2 rounded-full bg-primary"></div>
                   <div className="flex-1">
                     <p className="text-sm text-foreground">Mensagem para <b>{a.Lead?.nome || 'Lead'}</b> na campanha <b>{a.Campaign?.nome || 'Campanha'}</b></p>
