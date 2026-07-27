@@ -1,11 +1,28 @@
 export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20, onProgress }) {
-  let puppeteer;
-  try {
-    puppeteer = (await import('puppeteer')).default;
-  } catch (err) {
-    throw new Error("Puppeteer não está instalado ou não é suportado no ambiente atual (ex: Vercel).");
+  let browser;
+  const isVercel = process.env.VERCEL === '1';
+
+  if (isVercel) {
+    // Vercel Serverless environment
+    const chromium = (await import('@sparticuz/chromium')).default;
+    const puppeteerCore = (await import('puppeteer-core')).default;
+    
+    // Optional: Chromium settings for serverless
+    chromium.setGraphicsMode = false;
+    const executablePath = await chromium.executablePath();
+    
+    browser = await puppeteerCore.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: executablePath,
+      headless: chromium.headless,
+    });
+  } else {
+    // Local environment
+    const puppeteer = (await import('puppeteer')).default;
+    browser = await puppeteer.launch({ headless: true });
   }
-  const browser = await puppeteer.launch({ headless: true });
+
   const page = await browser.newPage();
   const query = `${categoria} em ${cidade} ${estado}`;
   const url = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
