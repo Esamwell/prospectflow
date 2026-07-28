@@ -22,10 +22,17 @@ export function TopNav({ onToggleSidebar }) {
   useEffect(() => {
     const fetchStatus = () => {
       fetch(`${API_BASE}/api/whatsapp/sessions`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Network response was not ok');
+          return res.json();
+        })
         .then(data => {
           const anyConnected = Array.isArray(data) && data.some(s => s.status === 'conectado');
           setWaStatus(anyConnected ? 'conectado' : 'desconectado');
+        })
+        .catch(error => {
+          // console.warn('Falha ao checar status do WhatsApp:', error);
+          setWaStatus('desconectado');
         });
     };
     fetchStatus();
