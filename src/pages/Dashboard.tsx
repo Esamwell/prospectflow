@@ -10,7 +10,8 @@ import {
   Clock,
   TrendingUp,
   Calendar,
-  Search
+  Search,
+  RefreshCw
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
