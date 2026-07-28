@@ -28,7 +28,8 @@ import {
   Clock,
   Phone,
   LayoutGrid,
-  List as ListIcon
+  List as ListIcon,
+  MessageCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
