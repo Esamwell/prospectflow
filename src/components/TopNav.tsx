@@ -17,28 +17,6 @@ import { API_BASE } from '@/lib/api';
 
 export function TopNav({ onToggleSidebar }) {
   const navigate = useNavigate();
-  const [waStatus, setWaStatus] = useState('');
-
-  useEffect(() => {
-    const fetchStatus = () => {
-      fetch(`${API_BASE}/api/whatsapp/sessions`)
-        .then(res => {
-          if (!res.ok) throw new Error('Network response was not ok');
-          return res.json();
-        })
-        .then(data => {
-          const anyConnected = Array.isArray(data) && data.some(s => s.status === 'conectado');
-          setWaStatus(anyConnected ? 'conectado' : 'desconectado');
-        })
-        .catch(error => {
-          // console.warn('Falha ao checar status do WhatsApp:', error);
-          setWaStatus('desconectado');
-        });
-    };
-    fetchStatus();
-    const interval = setInterval(fetchStatus, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   const user = (() => {
     try {
@@ -72,12 +50,6 @@ export function TopNav({ onToggleSidebar }) {
       </div>
 
       <div className="flex items-center gap-6">
-        <div className="flex items-center gap-2 text-sm">
-          <div className={`w-2 h-2 rounded-full ${waStatus === 'conectado' ? 'bg-success' : 'bg-yellow-500'} transition-colors`} />
-          <span className="text-muted-foreground select-none">
-            {waStatus === 'conectado' ? 'WhatsApp conectado' : 'WhatsApp desconectado'}
-          </span>
-        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

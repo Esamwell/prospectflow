@@ -153,7 +153,7 @@ const Templates = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" className="border-gray-800 hover:bg-gray-800 text-black" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
+            <Button variant="outline" className="border-gray-800 hover:bg-gray-800 text-white" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
             <Button className="bg-[#FF9500] hover:bg-[#FF9500]/90 text-white" onClick={handleSave}>Salvar</Button>
           </DialogFooter>
         </DialogContent>

@@ -105,7 +105,7 @@ const CompanyProfiles = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-foreground">Perfis de Empresa</h1>
-        <p className="text-muted-foreground">Cadastre e gerencie os perfis de empresa para personalizar as campanhas e respostas da IA.</p>
+        <p className="text-muted-foreground">Cadastre e gerencie os perfis de empresa para personalizar as mensagens.</p>
       </div>
       <form onSubmit={handleCriar} className="flex flex-wrap gap-2 items-end">
         <Input placeholder="Nome da empresa" value={nome} onChange={e => setNome(e.target.value)} />

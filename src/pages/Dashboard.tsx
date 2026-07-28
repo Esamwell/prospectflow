@@ -38,16 +38,12 @@ const Dashboard = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Visão geral das suas campanhas de prospecção</p>
+          <p className="text-muted-foreground">Visão geral do sistema de prospecção</p>
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="gap-2">
-            <Search className="w-4 h-4" />
-            Buscar Leads
-          </Button>
-          <Button className="gap-2 bg-gradient-primary text-white">
-            <MessageSquare className="w-4 h-4" />
-            Nova Campanha
+        <div className="flex gap-4">
+          <Button variant="outline" className="gap-2" onClick={() => fetchDados(true)}>
+            <RefreshCw className="w-4 h-4" />
+            Atualizar
           </Button>
         </div>
       </div>
@@ -64,28 +60,28 @@ const Dashboard = () => {
         </Card>
         <Card className="hover:shadow-medium transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Mensagens Enviadas</CardTitle>
-            <MessageSquare className="w-4 h-4 text-accent" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Leads Frios</CardTitle>
+            <Users className="w-4 h-4 text-blue-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{dados.totalMensagens}</div>
+            <div className="text-2xl font-bold text-foreground">{dados.leadsFrios}</div>
             <Badge variant="secondary" className="text-xs mt-1">Atualizado</Badge>
           </CardContent>
         </Card>
         <Card className="hover:shadow-medium transition-all">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">Taxa de Resposta</CardTitle>
-            <Check className="w-4 h-4 text-success" />
+            <CardTitle className="text-sm font-medium text-muted-foreground">Leads Mornos</CardTitle>
+            <Check className="w-4 h-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-foreground">{dados?.taxaResposta?.toFixed(1) || '0.0'}%</div>
+            <div className="text-2xl font-bold text-foreground">{dados.leadsMornos}</div>
             <Badge variant="secondary" className="text-xs mt-1">Atualizado</Badge>
           </CardContent>
         </Card>
         <Card className="hover:shadow-medium transition-all">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">Leads Quentes</CardTitle>
-            <TrendingUp className="w-4 h-4 text-warning" />
+            <TrendingUp className="w-4 h-4 text-[#FF9500]" />
             </CardHeader>
             <CardContent>
             <div className="text-2xl font-bold text-foreground">{dados.leadsQuentes}</div>
@@ -93,52 +89,31 @@ const Dashboard = () => {
             </CardContent>
           </Card>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Campanhas Recentes
+              <Users className="w-5 h-5" />
+              Últimos Leads Encontrados
             </CardTitle>
-            <CardDescription>Acompanhe o progresso das suas campanhas ativas</CardDescription>
+            <CardDescription>Veja os leads mais recentes capturados no sistema</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {(dados?.campanhasRecentes || []).map((c: any, i: number) => (
-              <div key={c.id || i} className="flex items-center justify-between p-4 border border-border rounded-lg">
+            {(dados?.ultimosLeads || []).map((l: any, i: number) => (
+              <div key={l.id || i} className="flex items-center justify-between p-4 border border-border rounded-lg">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-foreground">{c.nome}</p>
-                    <Badge variant={c.status === 'ativa' ? 'default' : 'secondary'} className="text-xs">{c.status}</Badge>
+                    <p className="font-medium text-foreground">{l.nome}</p>
+                    <Badge variant={l.status === 'quente' ? 'default' : 'secondary'} className="text-xs">{l.status}</Badge>
                   </div>
                   <div className="flex gap-4 text-sm text-muted-foreground">
-                    <span>ID: {c.id}</span>
+                    <span>{l.telefone}</span>
+                    <span>{l.cidade}</span>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">Ver detalhes</Button>
+                <Button variant="ghost" size="sm" onClick={() => navigate('/leads')}>Ver na Base</Button>
               </div>
             ))}
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              Atividade Recente
-            </CardTitle>
-            <CardDescription>Últimas ações no sistema</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {(dados?.atividadesRecentes || []).map((a: any, i: number) => (
-                <div key={a.id || i} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                  <div className="w-2 h-2 rounded-full bg-primary"></div>
-                  <div className="flex-1">
-                    <p className="text-sm text-foreground">Mensagem para <b>{a.Lead?.nome || 'Lead'}</b> na campanha <b>{a.Campaign?.nome || 'Campanha'}</b></p>
-                    <p className="text-xs text-muted-foreground">{new Date(a.createdAt).toLocaleString('pt-BR')}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
           </CardContent>
         </Card>
       </div>

@@ -571,9 +571,12 @@ const Leads = () => {
         <DialogContent className="bg-[#1c1c1e] text-white border-gray-800 max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Phone className="w-5 h-5 text-green-500" />
-              Enviar Mensagem WhatsApp
+              <MessageCircle className="w-5 h-5 text-[#FF9500]" />
+              Criar Mensagem (WhatsApp Web)
             </DialogTitle>
+            <DialogDescription>
+              Escolha um template ou digite a mensagem para enviar via WhatsApp Web para <b>{sendLead?.nome}</b>.
+            </DialogDescription>
           </DialogHeader>
           {sendLead && (
             <div className="flex flex-col gap-4 py-4">
