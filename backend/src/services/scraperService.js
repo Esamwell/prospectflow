@@ -1,15 +1,24 @@
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults = 20, onProgress }) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu'
-    ]
-  });
+  const isLocal = process.env.NODE_ENV !== 'production' && !process.env.RENDER;
+  
+  let browser;
+  if (isLocal) {
+    const puppeteerLocal = (await import('puppeteer')).default;
+    browser = await puppeteerLocal.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
+  } else {
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+  }
 
   const page = await browser.newPage();
   const query = `${categoria} em ${cidade} ${estado}`;
