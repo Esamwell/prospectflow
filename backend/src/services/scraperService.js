@@ -13,7 +13,7 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
     });
   } else {
     browser = await puppeteer.launch({
-      args: chromium.args,
+      args: [...chromium.args, '--disable-dev-shm-usage', '--single-process', '--no-zygote', '--disable-gpu'],
       defaultViewport: chromium.defaultViewport,
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
@@ -21,6 +21,17 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
   }
 
   const page = await browser.newPage();
+  
+  // Otimização: bloquear imagens e fontes para economizar memória e acelerar
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    if (['image', 'stylesheet', 'font', 'media'].includes(req.resourceType())) {
+      req.abort();
+    } else {
+      req.continue();
+    }
+  });
+
   const query = `${categoria} em ${cidade} ${estado}`;
   const url = `https://www.google.com/maps/search/${encodeURIComponent(query)}`;
   console.log('Iniciando scraping:', query);
@@ -28,7 +39,14 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
   // User-agent realista
   await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
-  await page.goto(url, { waitUntil: 'networkidle2' });
+  try {
+    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  } catch (err) {
+    console.error('Erro no page.goto:', err);
+    await browser.close();
+    throw new Error('Falha ao carregar a página do Google Maps. Tente novamente.');
+  }
+  
   await page.waitForTimeout(3000); // Espera extra para garantir carregamento
 
   // Scroll dinâmico até carregar todos os resultados ou atingir maxResults
@@ -77,7 +95,7 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
       onProgress(i + 1, cardLinks.length);
     }
     try {
-      await page.goto(fullLink, { waitUntil: 'networkidle2' });
+      await page.goto(fullLink, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.waitForTimeout(2500);
       // Esperar nome aparecer
       await page.waitForSelector('h1.DUwDvf', { timeout: 10000 });
@@ -104,12 +122,12 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
       results.push(data);
       console.log('Lead extraído:', data);
       // Voltar para a lista
-      await page.goBack({ waitUntil: 'networkidle2' });
+      await page.goBack({ waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(1500);
     } catch (err) {
       console.error('Erro ao extrair dados do cartão:', fullLink, err);
       // Tentar voltar para a lista mesmo em caso de erro
-      try { await page.goBack({ waitUntil: 'networkidle2' }); await page.waitForTimeout(1500); } catch {}
+      try { await page.goBack({ waitUntil: 'domcontentloaded' }); await page.waitForTimeout(1500); } catch {}
     }
   }
 
