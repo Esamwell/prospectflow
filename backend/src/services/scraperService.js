@@ -47,7 +47,7 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
     throw new Error('Falha ao carregar a página do Google Maps. Tente novamente.');
   }
   
-  await page.waitForTimeout(3000); // Espera extra para garantir carregamento
+  await new Promise(r => setTimeout(r, 3000)); // Espera extra para garantir carregamento
 
   // Scroll dinâmico até carregar todos os resultados ou atingir maxResults
   let previousCount = 0;
@@ -65,7 +65,7 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
     }
     previousCount = cardsCount;
     await page.keyboard.press('PageDown');
-    await page.waitForTimeout(1800); // tempo maior para garantir carregamento
+    await new Promise(r => setTimeout(r, 1800)); // tempo maior para garantir carregamento
   }
 
   // Esperar resultados carregarem
@@ -96,7 +96,7 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
     }
     try {
       await page.goto(fullLink, { waitUntil: 'domcontentloaded', timeout: 30000 });
-      await page.waitForTimeout(2500);
+      await new Promise(r => setTimeout(r, 2500));
       // Esperar nome aparecer
       await page.waitForSelector('h1.DUwDvf', { timeout: 10000 });
       const data = await page.evaluate(() => {
@@ -123,11 +123,11 @@ export async function scrapeGoogleMaps({ categoria, cidade, estado, maxResults =
       console.log('Lead extraído:', data);
       // Voltar para a lista
       await page.goBack({ waitUntil: 'domcontentloaded' });
-      await page.waitForTimeout(1500);
+      await new Promise(r => setTimeout(r, 1500));
     } catch (err) {
       console.error('Erro ao extrair dados do cartão:', fullLink, err);
       // Tentar voltar para a lista mesmo em caso de erro
-      try { await page.goBack({ waitUntil: 'domcontentloaded' }); await page.waitForTimeout(1500); } catch {}
+      try { await page.goBack({ waitUntil: 'domcontentloaded' }); await new Promise(r => setTimeout(r, 1500)); } catch {}
     }
   }
 
